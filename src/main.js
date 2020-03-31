@@ -16,7 +16,6 @@ const createProfileTemplate = () => {
   );
 };
 
-
 // Генерация Меню
 const createNavigationTemplate = () => {
   return (
@@ -245,7 +244,6 @@ const createFilmDetailsTemplate = () => {
   );
 };
 
-
 // Фукнция рендеринга
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -256,5 +254,17 @@ render(mainPageElement, createNavigationTemplate(), `beforeend`);
 render(mainPageElement, createSortTemplate(), `beforeend`);
 render(mainPageElement, createFilmContentTemplate(), `beforeend`);
 render(footerStatisticsElement, createFilmStatisticsTemplate(), `beforeend`);
-// render(document.body, createFilmDetailsTemplate(), `beforeend`);
+
+
+document.addEventListener(`click`, function showFilmDetailsHandler(evt) {
+  if (evt.target.closest(`.film-card`)) {
+    render(document.body, createFilmDetailsTemplate(), `beforeend`);
+
+    const filmDetailsElement = document.querySelector(`.film-details`);
+    const filmDetailsCloseButtonElement = filmDetailsElement.querySelector(`.film-details__close-btn`);
+    filmDetailsCloseButtonElement.addEventListener(`click`, () => {
+      filmDetailsElement.remove();
+    });
+  }
+});
 
