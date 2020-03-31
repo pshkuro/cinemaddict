@@ -256,6 +256,7 @@ render(mainPageElement, createFilmContentTemplate(), `beforeend`);
 render(footerStatisticsElement, createFilmStatisticsTemplate(), `beforeend`);
 
 
+// Рендерим Попап при нажатии на карточку фильма
 document.addEventListener(`click`, function showFilmDetailsHandler(evt) {
   if (evt.target.closest(`.film-card`)) {
     render(document.body, createFilmDetailsTemplate(), `beforeend`);
