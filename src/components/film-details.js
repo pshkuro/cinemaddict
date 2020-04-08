@@ -1,6 +1,8 @@
 // Генерация Попапа Подробная информация о фильме
 export const createFilmDetailsTemplate = (data) => {
- 
+  const {poster, wrap, rating, info, description, comments, controls} = data;
+
+  const {title, original} = wrap;
   return (
     `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
@@ -10,7 +12,7 @@ export const createFilmDetailsTemplate = (data) => {
         </div>
         <div class="film-details__info-wrap">
           <div class="film-details__poster">
-            <img class="film-details__poster-img" src="./images/posters/the-great-flamarion.jpg" alt="">
+            <img class="film-details__poster-img" src="./images/posters/${poster}" alt="">
   
             <p class="film-details__age">18+</p>
           </div>
@@ -18,8 +20,8 @@ export const createFilmDetailsTemplate = (data) => {
           <div class="film-details__info">
             <div class="film-details__info-head">
               <div class="film-details__title-wrap">
-                <h3 class="film-details__title">The Great Flamarion</h3>
-                <p class="film-details__title-original">Original: The Great Flamarion</p>
+                <h3 class="film-details__title">${title}</h3>
+                <p class="film-details__title-original">Original: ${original}</p>
               </div>
   
               <div class="film-details__rating">

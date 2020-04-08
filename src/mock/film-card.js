@@ -9,7 +9,7 @@ const generateCard = () => {
     poster: getRandomArrayItem(FILMS_POSTERS),
     wrap: {
       title: getRandomArrayItem(FILMS_NAMES),
-      original: getRandomArrayItem(FILMS_NAMES),
+      original: '',
     },
     rating: ``,
     info: {
