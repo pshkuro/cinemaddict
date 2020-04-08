@@ -1,5 +1,5 @@
 import {FILMS_POSTERS, FILMS_NAMES, FILMS_DURATION} from "../const";
-import {getRandomArrayItem, getRandomCountRandomArrayItem} from "../util";
+import {getRandomArrayItem, getRandomCountRandomArrayItem, getRandomIntegerRoundingNumber} from "../util";
 
 const FILM_DURATION_WORDS_COUNT = `5`;
 
@@ -9,21 +9,25 @@ const generateCard = () => {
     poster: getRandomArrayItem(FILMS_POSTERS),
     wrap: {
       title: getRandomArrayItem(FILMS_NAMES),
-      original: '',
+      original: ``, // Пофиксить, должно быть такое же как в title
     },
-    rating: ``,
+    rating: getRandomIntegerRoundingNumber(1, 10, 1),
     info: {
-      year: ``,
+      director: ``,
+      writers: ``,
+      actors: ``,
+      date: ``,
       duration: ``,
+      country: ``,
       genre: ``,
     },
     description: getRandomCountRandomArrayItem(FILMS_DURATION, FILM_DURATION_WORDS_COUNT),
-    comments: ``,
     controls: {
       isWatchlist: true,
       isWatched: false,
       isFavorite: true,
     },
+    comments: ``,
   };
 };
 
