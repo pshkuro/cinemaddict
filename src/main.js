@@ -32,7 +32,7 @@ render(footerStatisticsElement, createFilmStatisticsTemplate(), `beforeend`);
 // Рендерим Попап при нажатии на карточку фильма
 document.addEventListener(`click`, function showFilmDetailsHandler(evt) {
   if (evt.target.closest(`.film-card`)) {
-    render(document.body, createFilmDetailsTemplate(cards[0]), `beforeend`);
+    render(document.body, createFilmDetailsTemplate(cards), `beforeend`);
 
     const filmDetailsElement = document.querySelector(`.film-details`);
     const filmDetailsCloseButtonElement = filmDetailsElement.querySelector(`.film-details__close-btn`);

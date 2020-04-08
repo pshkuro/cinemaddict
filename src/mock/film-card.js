@@ -1,14 +1,15 @@
-import {FILMS_POSTERS} from "../const";
-import {getRandomArrayItem} from "../util";
+import {FILMS_POSTERS, FILMS_NAMES, FILMS_DURATION} from "../const";
+import {getRandomArrayItem, getRandomCountRandomArrayItem} from "../util";
 
+const FILM_DURATION_WORDS_COUNT = `5`;
 
 const generateCard = () => {
 
   return {
     poster: getRandomArrayItem(FILMS_POSTERS),
     wrap: {
-      title: ``,
-      original: ``,
+      title: getRandomArrayItem(FILMS_NAMES),
+      original: getRandomArrayItem(FILMS_NAMES),
     },
     rating: ``,
     info: {
@@ -16,7 +17,7 @@ const generateCard = () => {
       duration: ``,
       genre: ``,
     },
-    description: ``,
+    description: getRandomCountRandomArrayItem(FILMS_DURATION, FILM_DURATION_WORDS_COUNT),
     comments: ``,
     controls: {
       isWatchlist: true,
