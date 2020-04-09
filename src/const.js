@@ -12,3 +12,13 @@ export const FILMS_DURATION = [` Lorem ipsum dolor sit amet, consectetur adipisc
 export const FILMS_POSTERS = [`the-dance-of-life.jpg`, `santa-claus-conquers-the-martians.jpg`, `made-for-each-other.png`,
   `popeye-meets-sinbad.png`, `sagebrush-trail.jpg`, `the-great-flamarion.jpg`, `the-man-with-the-golden-arm.jpg`];
 
+export const FILM_DIRECTORS = [`Anthony Mann`, `Anne Wigton`, `Heinz Herald`, `Richard Weil`];
+
+export const FILM_WRITERS = [`Billy Wilder`, `Ethan Coen and Joel Coen`, `Robert Towne`, `Quentin Tarantino`, `Francis Ford Coppola`];
+
+export const FILM_ACTORS = [`Robert De Niro`, `Jack Nicholson`, `Marlon Brando`, `Denzel Washington`, `Humphrey Bogart`,
+  `Tom Hanks`];
+
+export const FILM_COUNTRY = [`USA`, `Brasil`, `Chili`, `Russia`, `Great Britan`];
+
+export const FILM_GENRE = [`Drama`, `Film-Noir`, `Mystery`, `Classic`, `Comedy`, `Horror`, `Thriller`];

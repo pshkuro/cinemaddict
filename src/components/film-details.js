@@ -1,8 +1,21 @@
+import {formatDate} from "../util";
+
+const createFilmGenreMarkup = (genre) => {
+  return (`<span class="film-details__genre">${genre}</span>`);
+};
+
+
 // Генерация Попапа Подробная информация о фильме
 export const createFilmDetailsTemplate = (data) => {
+
   const {poster, wrap, rating, info, description, comments, controls} = data;
 
   const {title, original} = wrap;
+  const {director, writers, actors, date, duration, country, genre} = info;
+
+  const formatedDate = formatDate(date);
+  const filmGenreMarkup = genre.map((genreItem) => createFilmGenreMarkup(genreItem)).join(`\n`);
+
   return (
     `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
@@ -32,34 +45,32 @@ export const createFilmDetailsTemplate = (data) => {
             <table class="film-details__table">
               <tr class="film-details__row">
                 <td class="film-details__term">Director</td>
-                <td class="film-details__cell">Anthony Mann</td>
+                <td class="film-details__cell">${director}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Writers</td>
-                <td class="film-details__cell">Anne Wigton, Heinz Herald, Richard Weil</td>
+                <td class="film-details__cell">${writers}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Actors</td>
-                <td class="film-details__cell">Erich von Stroheim, Mary Beth Hughes, Dan Duryea</td>
+                <td class="film-details__cell">${actors}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Release Date</td>
-                <td class="film-details__cell">30 March 1945</td>
+                <td class="film-details__cell">${formatedDate}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
-                <td class="film-details__cell">1h 18m</td>
+                <td class="film-details__cell">${duration}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Country</td>
-                <td class="film-details__cell">USA</td>
+                <td class="film-details__cell">${country}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Genres</td>
                 <td class="film-details__cell">
-                  <span class="film-details__genre">Drama</span>
-                  <span class="film-details__genre">Film-Noir</span>
-                  <span class="film-details__genre">Mystery</span></td>
+                  ${filmGenreMarkup}
               </tr>
             </table>
   

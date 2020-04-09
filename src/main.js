@@ -34,7 +34,7 @@ document.addEventListener(`click`, function showFilmDetailsHandler(evt) {
   const filmCardElement = evt.target.closest(`.film-card`); // Клик произошел по .film-card - true/false
   if (filmCardElement) {
     const filmCardId = filmCardElement.dataset.id; // Получает DataSet атрибут карточки, см в /component/film-card
-    const filmCardData = cards.find((it) => it.wrap.title === filmCardId); // Если название фильма на попапе = DataSet атрибут карточки
+    const filmCardData = cards.find((card) => card.wrap.title === filmCardId); // Если название фильма на попапе = DataSet атрибут карточки
     render(document.body, createFilmDetailsTemplate(filmCardData), `beforeend`);
 
     const filmDetailsElement = document.querySelector(`.film-details`);
