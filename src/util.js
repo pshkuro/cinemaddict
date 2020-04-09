@@ -81,3 +81,16 @@ export function formatDate(date) {
   return `${day} ${monthNames[month]} ${year}`;
 
 }
+
+// Форматирование даты в формат гггг/мм/дд чч:мм
+export function formatNumberDate(date) {
+  let d = date;
+  const dateYear = d.getFullYear();
+  d = [
+    `0` + (d.getMonth() + 1),
+    `0` + d.getDate(),
+    `0` + d.getHours(),
+    `0` + d.getMinutes()
+  ].map((component) => component.slice(-2));
+  return `${dateYear}/${d.slice(0, 2).join(`/`)}  ${d.slice(2).join(`:`)}`;
+}

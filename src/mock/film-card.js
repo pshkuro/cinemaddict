@@ -1,9 +1,27 @@
 import {FILMS_POSTERS, FILMS_NAMES, FILMS_DURATION, FILM_DIRECTORS, FILM_WRITERS, FILM_ACTORS,
-  FILM_COUNTRY, FILM_GENRE} from "../const";
+  FILM_COUNTRY, FILM_GENRE, FILM_COMMENTS_EMOJI} from "../const";
 import {getRandomArrayItem, getRandomCountRandomArrayItem, getRandomIntegerRoundingNumber,
-  getRandomDate, formatTime} from "../util";
+  getRandomDate, formatTime, getRandomIntegerNumber} from "../util";
 
 const FILM_DURATION_WORDS_COUNT = `5`;
+
+// Генерация объекта комментария
+const generateComment = () => {
+  return {
+    text: getRandomArrayItem(FILMS_DURATION),
+    emoji: getRandomArrayItem(FILM_COMMENTS_EMOJI),
+    author: getRandomArrayItem(FILM_WRITERS),
+    date: getRandomDate(new Date(2019, 0, 1), new Date()),
+  };
+};
+
+// Генерация массива комментариев
+const generateCommentList = () => {
+  const count = getRandomIntegerNumber(1, 10);
+  return new Array(count)
+  .fill(``)
+  .map(generateComment);
+};
 
 const generateCard = () => {
 
@@ -29,11 +47,11 @@ const generateCard = () => {
     },
     description: getRandomCountRandomArrayItem(FILMS_DURATION, FILM_DURATION_WORDS_COUNT),
     controls: {
-      isWatchlist: true,
-      isWatched: false,
-      isFavorite: true,
+      isWatchlist: Math.random() > 0.5,
+      isWatched: Math.random() > 0.5,
+      isFavorite: Math.random() > 0.5,
     },
-    comments: ``,
+    comments: generateCommentList(),
   };
 };
 

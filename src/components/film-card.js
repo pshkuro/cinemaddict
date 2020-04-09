@@ -1,6 +1,6 @@
 // Генерация карточки фильма
 export const createFilmCardTemplate = (data) => {
-  const {poster, wrap, rating, info, description, comments, controls} = data;
+  const {poster, wrap, rating, info, description, controls, comments} = data;
 
   const {title} = wrap;
   const {date, duration, genre} = info;
@@ -8,9 +8,9 @@ export const createFilmCardTemplate = (data) => {
 
   const releaseDate = date.getFullYear();
   const filmCardGenre = genre[0];
+  const commentsCount = comments.length;
 
-  const activeClass = `film-card__controls-item--active`;
-
+  const isButtonActive = (isActive) => isActive ? `film-card__controls-item--active` : ``;
 
   // Добавляем dataset атрибут карточке по названию фильма, чтобы идентифиц ее и связать с попапом карточки
   return (
@@ -24,11 +24,11 @@ export const createFilmCardTemplate = (data) => {
     </p>
     <img src="./images/posters/${poster}" alt="" class="film-card__poster">
     <p class="film-card__description">${description}</p>
-    <a class="film-card__comments">5 comments</a>
+    <a class="film-card__comments">${commentsCount} comments</a>
     <form class="film-card__controls">
-      <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist">Add to watchlist</button>
-      <button class="film-card__controls-item button film-card__controls-item--mark-as-watched">Mark as watched</button>
-      <button class="film-card__controls-item button film-card__controls-item--favorite">Mark as favorite</button>
+      <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${isButtonActive(isWatchlist)}">Add to watchlist</button>
+      <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${isButtonActive(isWatched)}">Mark as watched</button>
+      <button class="film-card__controls-item button film-card__controls-item--favorite ${isButtonActive(isFavorite)}">Mark as favorite</button>
     </form>
   </article>`
   );

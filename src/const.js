@@ -22,3 +22,6 @@ export const FILM_ACTORS = [`Robert De Niro`, `Jack Nicholson`, `Marlon Brando`,
 export const FILM_COUNTRY = [`USA`, `Brasil`, `Chili`, `Russia`, `Great Britan`];
 
 export const FILM_GENRE = [`Drama`, `Film-Noir`, `Mystery`, `Classic`, `Comedy`, `Horror`, `Thriller`];
+
+export const FILM_COMMENTS_EMOJI = [`./images/emoji/smile.png`, `./images/emoji/sleeping.png`, `./images/emoji/puke.png`,
+  `./images/emoji/angry.png`];
