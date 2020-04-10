@@ -1,6 +1,6 @@
 // Генерация статистики фильмов
-export const createFilmStatisticsTemplate = () => {
+export const createFilmCountTemplate = (cards) => {
   return (
-    `<p>130 291 movies inside</p>`
+    `<p>${cards.length} movies inside</p>`
   );
 };

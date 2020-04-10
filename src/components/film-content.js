@@ -1,6 +1,6 @@
 import {createFilmCardTemplate} from "./film-card";
 import {createShowMoreButtonTemplate} from "./show-more-button";
-import {createElementsTemplate} from "../util";
+import {createElementsTemplate, conditionalTemplate} from "../util";
 import {render} from "../main";
 
 const FILM_EXTRA_COUNT = 2;
@@ -11,15 +11,20 @@ let showingCardsCount = SHOWING_CARDS_COUNT_ON_START;
 // Генерация Film Content
 export const createFilmContentTemplate = (data) => {
 
+
   const ratedFilmsData = data.slice().sort((a, b) => b.rating - a.rating);
   const commentedFilmsData = data.slice().sort((a, b) => b.comments.length - a.comments.length);
+
   const hasCommentedFilms = data.some((card) => card.comments.length !== 0);
-  const isCommentedFilmsShow = (commentedFilmsBlockMarkup) => (hasCommentedFilms ? commentedFilmsBlockMarkup : ``);
+  const isCommentedFilmsShow = (commentedFilmsBlockMarkup) =>
+    conditionalTemplate(hasCommentedFilms, commentedFilmsBlockMarkup); // Проверяет, есть ли фильмы с комментами
+
   const hasRatedFilms = data.some((card) => card.rating !== 0);
-  const isRatedFilmsShow = (ratedFilmsBlockMarkup) => (hasRatedFilms ? ratedFilmsBlockMarkup : ``);
+  const isRatedFilmsShow = (ratedFilmsBlockMarkup) =>
+    conditionalTemplate(hasRatedFilms, ratedFilmsBlockMarkup); // Проверяет, есть ли фильмы с рейтингом
 
-  // const conditionalTemplate = (condition, template) => condition ? template : ``;
 
+  // Рендерит карточки по нажатию на кнопку Show More
   createFilmContentTemplate.onTemplateRendered = () => {
     const showMoreButton = document.querySelector(`.films-list__show-more`);
     let filmCardsContainer = document.querySelector(`.films-list__container`);

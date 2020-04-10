@@ -10,6 +10,7 @@ export function createElementsTemplate(data, count, templateFn) {
   return template;
 }
 
+export const conditionalTemplate = (condition, template) => condition ? template : ``;
 
 // Генерация случ эл массива
 export const getRandomArrayItem = (array) => {

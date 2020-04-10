@@ -2,7 +2,7 @@ import {createProfileTemplate} from "./components/profile";
 import {createFilterTemplate} from "./components/menu";
 import {createSortTemplate} from "./components/sort";
 import {createFilmContentTemplate} from "./components/film-content";
-import {createFilmStatisticsTemplate} from "./components/statistic";
+import {createFilmCountTemplate} from "./components/statistic";
 import {createFilmDetailsTemplate} from "./components/film-details";
 import {generateCards} from "./mock/film-card";
 import {generateFilters} from "./mock/filter";
@@ -20,14 +20,14 @@ export const render = (container, template, place) => {
 };
 
 const cards = generateCards(CARD_FILM_COUNT); // Массив объектов карточек кол-ом CARD_FILM_COUNT
-const filters = generateFilters();
+const filters = generateFilters(cards);
 
 render(headerPageElement, createProfileTemplate(), `beforeend`);
 render(mainPageElement, createFilterTemplate(filters), `beforeend`);
 render(mainPageElement, createSortTemplate(), `beforeend`);
 render(mainPageElement, createFilmContentTemplate(cards), `beforeend`);
 createFilmContentTemplate.onTemplateRendered();
-render(footerStatisticsElement, createFilmStatisticsTemplate(), `beforeend`);
+render(footerStatisticsElement, createFilmCountTemplate(cards), `beforeend`);
 
 
 // Рендерим Попап при нажатии на карточку фильма
