@@ -7,10 +7,10 @@ import {createFilmDetailsTemplate} from "./components/film-details";
 import {generateCards} from "./mock/film-card";
 import {generateFilters} from "./mock/filter";
 
-const CARD_FILM_COUNT = 22;
+const CARD_FILM_COUNT = 12;
 
 const headerPageElement = document.querySelector(`header`);
-export const mainPageElement = document.querySelector(`.main`);
+const mainPageElement = document.querySelector(`.main`);
 const footerStatisticsElement = document.querySelector(`.footer__statistics`);
 
 

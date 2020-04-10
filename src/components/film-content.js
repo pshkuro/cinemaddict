@@ -1,13 +1,12 @@
 import {createFilmCardTemplate} from "./film-card";
 import {createShowMoreButtonTemplate} from "./show-more-button";
 import {createElementsTemplate} from "../util";
-import {render, mainPageElement} from "../main";
+import {render} from "../main";
 
 const FILM_EXTRA_COUNT = 2;
 const SHOWING_CARDS_COUNT_BY_BUTTON = 5;
 const SHOWING_CARDS_COUNT_ON_START = 5;
 let showingCardsCount = SHOWING_CARDS_COUNT_ON_START;
-
 
 // Генерация Film Content
 export const createFilmContentTemplate = (data) => {
@@ -23,16 +22,17 @@ export const createFilmContentTemplate = (data) => {
 
   createFilmContentTemplate.onTemplateRendered = () => {
     const showMoreButton = document.querySelector(`.films-list__show-more`);
-
+    let filmCardsContainer = document.querySelector(`.films-list__container`);
 
     showMoreButton.addEventListener(`click`, () => {
+
       const prevCardsCount = showingCardsCount;
       showingCardsCount = showingCardsCount + SHOWING_CARDS_COUNT_BY_BUTTON;
 
       const showMoreData = data.slice(prevCardsCount, showingCardsCount);
       const showMoreCards = createElementsTemplate(showMoreData, SHOWING_CARDS_COUNT_BY_BUTTON, createFilmCardTemplate);
 
-      render(mainPageElement, showMoreCards, `beforeend`);
+      render(filmCardsContainer, showMoreCards, `beforeend`);
 
       if (showingCardsCount >= data.length) {
         showMoreButton.remove();

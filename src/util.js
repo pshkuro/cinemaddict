@@ -2,6 +2,9 @@
 export function createElementsTemplate(data, count, templateFn) {
   let template = ``;
   for (let i = 0; i < count; i++) {
+    if (!data[i]) {
+      return template;
+    }
     template = `${template} ${templateFn(data[i])}`;
   }
   return template;
