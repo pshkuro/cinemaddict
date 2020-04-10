@@ -7,15 +7,15 @@ import {createFilmDetailsTemplate} from "./components/film-details";
 import {generateCards} from "./mock/film-card";
 import {generateFilters} from "./mock/filter";
 
-const CARD_FILM_COUNT = 5;
+const CARD_FILM_COUNT = 22;
 
 const headerPageElement = document.querySelector(`header`);
-const mainPageElement = document.querySelector(`.main`);
+export const mainPageElement = document.querySelector(`.main`);
 const footerStatisticsElement = document.querySelector(`.footer__statistics`);
 
 
 // Фукнция рендеринга
-const render = (container, template, place) => {
+export const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
 };
 
@@ -26,6 +26,7 @@ render(headerPageElement, createProfileTemplate(), `beforeend`);
 render(mainPageElement, createFilterTemplate(filters), `beforeend`);
 render(mainPageElement, createSortTemplate(), `beforeend`);
 render(mainPageElement, createFilmContentTemplate(cards), `beforeend`);
+createFilmContentTemplate.onTemplateRendered();
 render(footerStatisticsElement, createFilmStatisticsTemplate(), `beforeend`);
 
 
@@ -44,4 +45,3 @@ document.addEventListener(`click`, function showFilmDetailsHandler(evt) {
     });
   }
 });
-

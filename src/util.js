@@ -1,7 +1,7 @@
 // Ф создания нескольких карточек
-export function createElementsTemplate(data, templateFn) {
+export function createElementsTemplate(data, count, templateFn) {
   let template = ``;
-  for (let i = 0; i < data.length; i++) {
+  for (let i = 0; i < count; i++) {
     template = `${template} ${templateFn(data[i])}`;
   }
   return template;
