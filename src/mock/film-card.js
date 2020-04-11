@@ -1,4 +1,4 @@
-import {FILMS_POSTERS, FILMS_NAMES, FILMS_DURATION, FILM_DIRECTORS, FILM_WRITERS, FILM_ACTORS,
+import {FILMS_POSTERS, FILMS_NAMES, FILMS_DESCRIPTION, FILM_DIRECTORS, FILM_WRITERS, FILM_ACTORS,
   FILM_COUNTRY, FILM_GENRE, FILM_COMMENTS_EMOJI} from "../const";
 import {getRandomArrayItem, getRandomCountRandomArrayItem, getRandomIntegerRoundingNumber,
   getRandomDate, formatTime, getRandomIntegerNumber} from "../util";
@@ -8,7 +8,7 @@ const FILM_DURATION_WORDS_COUNT = `5`;
 // Генерация объекта комментария
 const generateComment = () => {
   return {
-    text: getRandomArrayItem(FILMS_DURATION),
+    text: getRandomArrayItem(FILMS_DESCRIPTION),
     emoji: getRandomArrayItem(FILM_COMMENTS_EMOJI),
     author: getRandomArrayItem(FILM_WRITERS),
     date: getRandomDate(new Date(2019, 0, 1), new Date()),
@@ -45,7 +45,7 @@ const generateCard = () => {
       country: getRandomArrayItem(FILM_COUNTRY),
       genre: getRandomCountRandomArrayItem(FILM_GENRE),
     },
-    description: getRandomCountRandomArrayItem(FILMS_DURATION, FILM_DURATION_WORDS_COUNT),
+    description: getRandomCountRandomArrayItem(FILMS_DESCRIPTION, FILM_DURATION_WORDS_COUNT),
     controls: {
       isWatchlist: Math.random() > 0.5,
       isWatched: Math.random() > 0.5,

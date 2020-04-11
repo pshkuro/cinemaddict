@@ -8,7 +8,7 @@ const createFilterMarkup = (filter, isActive) => {
   return (`
   <a href="#${name.toLowerCase()}" class="main-navigation__item${navigationActiveClass}">
   ${name } ${(isActive || count > ITEM_COUNT_SHOW_NUMBER) ? `` :
-      `<span class="main-navigation__item-count">${count}</span>`}${isActive ? ` movies` : ``}</a>`
+      `<span class="main-navigation__item-count">${count}</span>`}</a>`
   );
 };
 
