@@ -1,3 +1,11 @@
+// Функция для создания DOM-элемента на основе шаблона разметки
+export const createElement = (template) => {
+  const newElement = document.createElement(`div`);
+  newElement.innerHTML = template;
+
+  return newElement.firstChild;
+};
+
 // Ф создания нескольких карточек
 export function createElementsTemplate(data, count, templateFn) {
   let template = ``;
