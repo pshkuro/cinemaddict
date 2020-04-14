@@ -1,5 +1,7 @@
+import {createElement} from "../util";
+
 // Генерация карточки фильма
-export const createFilmCardTemplate = (data) => {
+const createFilmCardTemplate = (data) => {
   const {poster, wrap, rating, info, description, controls, comments} = data;
 
   const {title} = wrap;
@@ -33,3 +35,25 @@ export const createFilmCardTemplate = (data) => {
   </article>`
   );
 };
+
+export default class FilmCardComponent {
+  constructor(film) {
+    this._film = film;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmCardTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

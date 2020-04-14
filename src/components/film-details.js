@@ -1,4 +1,4 @@
-import {formatDate, formatNumberDate} from "../util";
+import {formatDate, formatNumberDate, createElement} from "../util";
 
 const createFilmGenreMarkup = (genre) => {
   return (`<span class="film-details__genre">${genre}</span>`);
@@ -22,7 +22,7 @@ const createCommentMarkup = (emoji, text, author, date) => {
 };
 
 // Генерация Попапа Подробная информация о фильме
-export const createFilmDetailsTemplate = (data) => {
+const createFilmDetailsTemplate = (data) => {
 
   const {poster, wrap, rating, info, description, comments} = data;
 
@@ -154,3 +154,25 @@ export const createFilmDetailsTemplate = (data) => {
   </section>`
   );
 };
+
+export default class FilmDetailsComponent {
+  constructor(film) {
+    this._film = film;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmDetailsTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

@@ -1,3 +1,5 @@
+import {createElement} from "../util";
+
 const ITEM_COUNT_SHOW_NUMBER = 5;
 
 const createFilterMarkup = (filter, isActive) => {
@@ -13,7 +15,7 @@ const createFilterMarkup = (filter, isActive) => {
 };
 
 // Генерация Меню
-export const createFilterTemplate = (filters) => {
+const createFilterTemplate = (filters) => {
   const filterMarkup = filters.map((filter, index) => createFilterMarkup(filter, index === 0)).join(`\n`);
   return (
     `<nav class="main-navigation">
@@ -24,3 +26,26 @@ export const createFilterTemplate = (filters) => {
   </nav>`
   );
 };
+
+export default class FiltersComponent {
+  constructor(films) {
+    this._films = films;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilterTemplate(this._films);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+
+}
