@@ -18,7 +18,7 @@ export const render = (container, element, place) => {
 // Функция для создания DOM-элемента на основе шаблона разметки
 export const createElement = (template) => {
   const newElement = document.createElement(`div`);
-  newElement.innerHTML = template;
+  newElement.innerHTML = template.trim().replace(`\n`, ``);
 
   return newElement.firstChild;
 };
