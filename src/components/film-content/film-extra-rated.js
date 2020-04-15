@@ -1,5 +1,5 @@
-import {conditionalTemplate, createElement, tFor} from "../util";
-import {FILM_EXTRA_COUNT} from "./films-extra";
+import {conditionalTemplate, createElement, tFor} from "../../util";
+import {FILM_EXTRA_COUNT} from "../../const";
 import FilmCardComponent from "./film-card";
 
 export default class FilmTopRatedComponent {

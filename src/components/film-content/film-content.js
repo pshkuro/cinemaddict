@@ -1,20 +1,15 @@
-import {createElement} from "../util";
+import {createElement} from "../../util";
 
 // Генерация Film Content
-const createFilmContentTemplate = () => {
-
-  return (
-    `<section class="films"></section>`
-  );
-};
-
 export default class FilmContentComponent {
   constructor() {
     this._element = null;
   }
 
   getTemplate() {
-    return createFilmContentTemplate();
+    return (
+      `<section class="films"></section>`
+    );
   }
 
   getElement() {

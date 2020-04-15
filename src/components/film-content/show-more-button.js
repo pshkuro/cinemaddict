@@ -1,19 +1,15 @@
-import {createElement} from "../util";
+import {createElement} from "../../util";
 
 // Генерация кнопки 'Learn More'
-const createShowMoreButtonTemplate = () => {
-  return (
-    `<button class="films-list__show-more">Show more</button>`
-  );
-};
-
 export default class ShowMoreButtonComponent {
   constructor() {
     this._element = null;
   }
 
   getTemplate() {
-    return createShowMoreButtonTemplate();
+    return (
+      `<button class="films-list__show-more">Show more</button>`
+    );
   }
 
   getElement() {

@@ -1,12 +1,6 @@
 import {createElement} from "../util";
 
 // Генерация статистики фильмов
-const createFilmCountTemplate = (cards) => {
-  return (
-    `<p>${cards.length} movies inside</p>`
-  );
-};
-
 export default class FilmCountComponent {
   constructor(films) {
     this._films = films;
@@ -14,7 +8,9 @@ export default class FilmCountComponent {
   }
 
   getTemplate() {
-    return createFilmCountTemplate(this._films);
+    return (
+      `<p>${this._films.length} movies inside</p>`
+    );
   }
 
   getElement() {
