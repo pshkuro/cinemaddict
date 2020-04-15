@@ -159,6 +159,11 @@ export default class FilmDetailsComponent {
   constructor(film) {
     this._film = film;
     this._element = null;
+
+    // При нажатии на кнопку, удаляется.
+    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, () => {
+      this.getElement().remove();
+    });
   }
 
   getTemplate() {

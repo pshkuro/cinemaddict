@@ -5,8 +5,8 @@ import FilmContentComponent from "./components/film-content";
 import FilmsListComponent from "./components/films-list";
 import FilmCardComponent from "./components/film-card";
 import ShowMoreButtonComponent from "./components/show-more-button";
-import FilmsExtraComponent from './components/films-extra';
-import FilmDetailsComponent from "./components/film-details";
+import FilmTopRatedComponent from "./components/film-extra-rated";
+import FilmMostCommentedComponent from "./components/film-extra-commented";
 import FilmCountComponent from "./components/statistic";
 import {generateCards} from "./mock/film-card";
 import {generateFilters} from "./mock/filter";
@@ -35,31 +35,7 @@ const renderFilmCard = (filmCardsContainer, film) => {
   render(filmCardsContainer, filmCardComponent.getElement(), RenderPosition.BEFOREEND);
 };
 
-// Рендерим Попап при нажатии на карточку фильма
-document.addEventListener(`click`, function showFilmDetailsHandler(evt) {
-
-  const filmCardElement = evt.target.closest(`.film-card`); // Клик произошел по .film-card - true/false
-  if (filmCardElement) {
-    const filmCardId = filmCardElement.dataset.id; // Получает DataSet атрибут карточки, см в /component/film-card
-    const filmCardData = cards.find((card) => card.wrap.title === filmCardId); // Если название фильма на попапе = DataSet атрибут карточки
-    const filmDetailsComponent = new FilmDetailsComponent(filmCardData);
-    render(document.body, filmDetailsComponent.getElement(), `beforeend`);
-
-    const filmDetailsCloseButtonElement = filmDetailsComponent.getElement().querySelector(`.film-details__close-btn`);
-    filmDetailsCloseButtonElement.addEventListener(`click`, () => {
-      filmDetailsComponent.getElement().remove();
-      filmDetailsComponent.removeElement();
-    });
-  }
-});
-
-
-const renderFilmsExtra = (filmsExtraContainer, films) => {
-  const filmsExtraComponent = new FilmsExtraComponent(films);
-  render(filmsExtraContainer, filmsExtraComponent.getElement(), RenderPosition.BEFOREEND);
-};
-
-
+// Логика блока FilmContent
 const renderFilmsContent = (filmsContentComponent, films) => {
   render(mainPageElement, filmsContentComponent.getElement(), RenderPosition.BEFOREEND);
 
@@ -96,20 +72,15 @@ const renderFilmsContent = (filmsContentComponent, films) => {
     }
   });
 
-  renderFilmsExtra(filmsContentComponent.getElement(), films);
+  // Рендерим Rated и Commented в FilmContent
+  render(filmsContentComponent.getElement(), new FilmTopRatedComponent(films).getElement(), RenderPosition.BEFOREEND);
+  render(filmsContentComponent.getElement(), new FilmMostCommentedComponent(films).getElement(), RenderPosition.BEFOREEND);
 };
 
-
+// Рендерим блок FilmContent на страницу
 const filmsContentComponent = new FilmContentComponent();
 renderFilmsContent(filmsContentComponent, cards);
 
+// Рендерим количество фильмов в футер
 render(footerStatisticsElement, new FilmCountComponent(cards).getElement(), RenderPosition.BEFOREEND);
-
-// render(headerPageElement, createProfileTemplate(), `beforeend`);
-// render(mainPageElement, createFilterTemplate(filters), `beforeend`);
-// render(mainPageElement, createSortTemplate(), `beforeend`);
-// render(mainPageElement, createFilmContentTemplate(cards), `beforeend`);
-// createFilmContentTemplate.onTemplateRendered();
-// render(footerStatisticsElement, createFilmCountTemplate(cards), `beforeend`);
-
 

@@ -1,4 +1,5 @@
 import {createElement} from "../util";
+import FilmDetailsComponent from "./film-details";
 
 // Генерация карточки фильма
 const createFilmCardTemplate = (data) => {
@@ -40,6 +41,15 @@ export default class FilmCardComponent {
   constructor(film) {
     this._film = film;
     this._element = null;
+
+    this.getElement().querySelector(`.film-card__poster`).addEventListener(`click`, () => this.onFilmDetailClick());
+    this.getElement().querySelector(`.film-card__title`).addEventListener(`click`, () => this.onFilmDetailClick());
+    this.getElement().querySelector(`.film-card__comments`).addEventListener(`click`, () => this.onFilmDetailClick());
+  }
+
+  onFilmDetailClick() {
+    const filmDetailsComponent = new FilmDetailsComponent(this._film);
+    document.body.appendChild(filmDetailsComponent.getElement());
   }
 
   getTemplate() {

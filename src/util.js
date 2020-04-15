@@ -24,15 +24,24 @@ export const createElement = (template) => {
 };
 
 // Ф создания нескольких карточек
-export function createElementsTemplate(data, count, templateFn) {
+export function createElementsTemplate(data, templateFn) {
   let template = ``;
-  for (let i = 0; i < count; i++) {
+  for (let i = 0; i < data.length; i++) {
     if (!data[i]) {
       return template;
     }
     template = `${template} ${templateFn(data[i])}`;
   }
   return template;
+}
+
+// Ф создания нескольких карточек
+export function tFor(data, Component) {
+  return data.reduce((template, film) => {
+    const component = new Component(film);
+    const componentTemplate = component.getTemplate();
+    return `${template}${componentTemplate}`;
+  }, ``);
 }
 
 export const conditionalTemplate = (condition, template) => condition ? template : ``;
