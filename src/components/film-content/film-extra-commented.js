@@ -1,4 +1,4 @@
-import {conditionalTemplate, createElement, tFor} from "../../util";
+import {conditionalTemplate, createElement, createElements, render, RenderPosition} from "../../util";
 import {FILM_EXTRA_COUNT} from "../../const";
 import FilmCardComponent from "./film-card";
 
@@ -25,7 +25,6 @@ export default class FilmMostCommentedComponent {
     <section class="films-list--extra">
       <h2 class="films-list__title">Top commented</h2>
       <div class="films-list__container">
-        ${tFor(this._commentedFilmsData, FilmCardComponent)}
     </div>
     </section>`)}`);
   }
@@ -33,6 +32,8 @@ export default class FilmMostCommentedComponent {
   getElement() {
     if (!this._element) {
       this._element = createElement(this.getTemplate());
+      const filmCards = createElements(this._commentedFilmsData, FilmCardComponent); // Создаем Dom-элементы карточек
+      render(this._element.querySelector(`.films-list__container`), filmCards, RenderPosition.BEFOREEND);
     }
 
     return this._element;

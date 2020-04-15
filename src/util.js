@@ -36,12 +36,17 @@ export function createElementsTemplate(data, templateFn) {
 }
 
 // Ф создания нескольких карточек
-export function tFor(data, Component) {
-  return data.reduce((template, film) => {
-    const component = new Component(film);
-    const componentTemplate = component.getTemplate();
-    return `${template}${componentTemplate}`;
-  }, ``);
+export function createElements(data, Component) {
+  const fragment = new DocumentFragment();
+
+  data.forEach((item) => {
+    const component = new Component(item);
+    const element = component.getElement();
+
+    fragment.appendChild(element);
+  });
+
+  return fragment;
 }
 
 export const conditionalTemplate = (condition, template) => condition ? template : ``;
