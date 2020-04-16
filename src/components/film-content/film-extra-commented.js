@@ -6,10 +6,9 @@ export default class FilmMostCommentedComponent {
   constructor(films) {
     this._films = films;
     this._element = null;
-    this.init();
   }
 
-  init() {
+  getTemplate() {
     this._commentedFilmsData = this._films
     .slice()
     .sort((a, b) => b.comments.length - a.comments.length)
@@ -18,9 +17,7 @@ export default class FilmMostCommentedComponent {
     const hasCommentedFilms = this._films.some((card) => card.comments.length !== 0);
     this._isCommentedFilmsShow = (commentedFilmsBlockMarkup) =>
       conditionalTemplate(hasCommentedFilms, commentedFilmsBlockMarkup); // Проверяет, есть ли фильмы с комментами
-  }
 
-  getTemplate() {
     return (`${this._isCommentedFilmsShow(`
     <section class="films-list--extra">
       <h2 class="films-list__title">Top commented</h2>

@@ -6,10 +6,9 @@ export default class FilmTopRatedComponent {
   constructor(films) {
     this._films = films;
     this._element = null;
-    this.init();
   }
 
-  init() {
+  getTemplate() {
     this._ratedFilmsData = this._films
     .slice()
     .sort((a, b) => b.rating - a.rating)
@@ -19,9 +18,6 @@ export default class FilmTopRatedComponent {
     this._isRatedFilmsShow = (ratedFilmsBlockMarkup) =>
       conditionalTemplate(hasRatedFilms, ratedFilmsBlockMarkup); // Проверяет, есть ли фильмы с рейтингом
 
-  }
-
-  getTemplate() {
     return (`${this._isRatedFilmsShow(`
     <section class="films-list--extra">
       <h2 class="films-list__title">Top rated</h2>

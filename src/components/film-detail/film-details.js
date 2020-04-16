@@ -5,18 +5,9 @@ import FilmsGenresComponent from "./film-detail-ganre";
 // Генерация блока FilmsDetails
 export default class FilmDetailsComponent {
   constructor(film) {
-    this._film = film;
     this._element = null;
-    this.init();
 
-    // При нажатии на кнопку, удаляется.
-    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, () => {
-      this.getElement().remove();
-    });
-  }
-
-  init() {
-    const {poster, wrap, rating, info, description, comments} = this._film;
+    const {poster, wrap, rating, info, description, comments} = film;
     const {title, original} = wrap;
     const {director, writers, actors, date, duration, country, genre} = info;
 
@@ -28,20 +19,25 @@ export default class FilmDetailsComponent {
     this._director = director;
     this._writers = writers;
     this._actors = actors;
+    this._date = date;
     this._duration = duration;
     this._country = country;
     this._genre = genre;
     this._description = description;
     this._comments = comments;
 
-    this._formatedDate = formatDate(date);
-    this._filmGenreMarkup = genre.map((genreItem) => new FilmsGenresComponent(genreItem).getTemplate()).join(`\n`);
-    this._filmCommentsMarkup = comments.map((comment) =>
-      new FilmsCommentsComponent(comment.emoji, comment.text, comment.author, comment.date).getTemplate()).join(`\n`);
-
+    // При нажатии на кнопку, удаляется.
+    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, () => {
+      this.getElement().remove();
+    });
   }
 
   getTemplate() {
+    this._formatedDate = formatDate(this._date);
+    this._filmGenreMarkup = this._genre.map((genreItem) => new FilmsGenresComponent(genreItem).getTemplate()).join(`\n`);
+    this._filmCommentsMarkup = this._comments.map((comment) =>
+      new FilmsCommentsComponent(comment.emoji, comment.text, comment.author, comment.date).getTemplate()).join(`\n`);
+
     return (
       `<section class="film-details">
       <form class="film-details__inner" action="" method="get">

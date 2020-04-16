@@ -6,7 +6,22 @@ export default class FilmCardComponent {
   constructor(film) {
     this._film = film;
     this._element = null;
-    this.init();
+    const {poster, wrap, rating, info, description, controls, comments} = this._film;
+    const {title} = wrap;
+    const {date, duration, genre} = info;
+    const {isWatchlist, isWatched, isFavorite} = controls;
+
+    this._comments = comments;
+    this._title = title;
+    this._date = date;
+    this._rating = rating;
+    this._poster = poster;
+    this._duration = duration;
+    this._genre = genre;
+    this._description = description;
+    this._isWatchlist = isWatchlist;
+    this._isWatched = isWatched;
+    this._isFavorite = isFavorite;
 
     // Открытие FilmDetails по клику
     this.getElement().querySelector(`.film-card__poster`).addEventListener(`click`, () => this.onFilmDetailClick());
@@ -14,25 +29,6 @@ export default class FilmCardComponent {
     this.getElement().querySelector(`.film-card__comments`).addEventListener(`click`, () => this.onFilmDetailClick());
   }
 
-  init() {
-    const {poster, wrap, rating, info, description, controls, comments} = this._film;
-    const {title} = wrap;
-    const {date, duration, genre} = info;
-    const {isWatchlist, isWatched, isFavorite} = controls;
-
-    this._title = title;
-    this._rating = rating;
-    this._poster = poster;
-    this._duration = duration;
-    this._description = description;
-    this._isWatchlist = isWatchlist;
-    this._isWatched = isWatched;
-    this._isFavorite = isFavorite;
-    this._releaseDate = date.getFullYear();
-    this._filmCardGenre = genre[0];
-    this._commentsCount = comments.length;
-    this._isButtonActive = (isActive) => isActive ? `film-card__controls-item--active` : ``;
-  }
 
   onFilmDetailClick() {
     const filmDetailsComponent = new FilmDetailsComponent(this._film);
@@ -40,6 +36,10 @@ export default class FilmCardComponent {
   }
 
   getTemplate() {
+    this._releaseDate = this._date.getFullYear();
+    this._filmCardGenre = this._genre[0];
+    this._commentsCount = this._comments.length;
+    this._isButtonActive = (isActive) => isActive ? `film-card__controls-item--active` : ``;
     return (
       `<article class="film-card" data-id="${this._title}"> 
       <h3 class="film-card__title">${this._title}</h3>

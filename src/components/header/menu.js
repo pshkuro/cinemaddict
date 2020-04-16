@@ -6,17 +6,15 @@ export default class FiltersComponent {
   constructor(filters) {
     this._filters = filters;
     this._element = null;
-    this.init();
   }
 
-  init() {
+
+  getTemplate() {
     this._filterMarkup = this._filters.map((filter, index) =>
       new FiltersMarkupComponent(filter, index === 0)
       .getTemplate())
       .join(`\n`);
-  }
 
-  getTemplate() {
     return (
       `<nav class="main-navigation">
       <div class="main-navigation__items">
