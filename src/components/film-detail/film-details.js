@@ -11,8 +11,19 @@ export default class FilmDetailsComponent {
 
     // При нажатии на кнопку, удаляется.
     this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, () => {
-      this.getElement().remove();
+      this.onFilmDetailCloseClick();
     });
+    // И на Esc
+    document.addEventListener(`keydown`, (evt) => {
+      const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
+      if (isEscKey) {
+        this.onFilmDetailCloseClick();
+      }
+    });
+  }
+
+  onFilmDetailCloseClick() {
+    this.getElement().remove();
   }
 
   init() {
