@@ -25,7 +25,9 @@ export default class FilmDetailsComponent {
     this._genre = genre;
     this._description = description;
     this._comments = comments;
+  }
 
+  onFilmDetailClose() {
     // При нажатии на кнопку, удаляется.
     this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, () => {
       this.getElement().remove();
@@ -162,6 +164,7 @@ export default class FilmDetailsComponent {
   getElement() {
     if (!this._element) {
       this._element = createElement(this.getTemplate());
+      this.onFilmDetailClose();
     }
     return this._element;
   }

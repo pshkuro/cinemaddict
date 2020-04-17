@@ -4,21 +4,22 @@ import FilmCardComponent from "./film-card";
 
 export default class FilmMostCommentedComponent {
   constructor(films) {
-    this._films = films;
     this._element = null;
+
+    this._films = films.slice()
+    .sort((a, b) => b.comments.length - a.comments.length); // Отсортированный массив
+    this._commentedFilmsData = this._films
+    .slice(0, FILM_EXTRA_COUNT);
+
+  }
+
+  _isCommentedFilmsShow(commentedFilmsBlockMarkup) {
+    const hasCommentedFilms = this._films.some((card) => card.comments.length);
+    return conditionalTemplate(hasCommentedFilms, commentedFilmsBlockMarkup);
   }
 
   getTemplate() {
-    this._commentedFilmsData = this._films
-    .slice()
-    .sort((a, b) => b.comments.length - a.comments.length)
-    .slice(0, FILM_EXTRA_COUNT);
-
-    const hasCommentedFilms = this._films.some((card) => card.comments.length !== 0);
-    const isCommentedFilmsShow = (commentedFilmsBlockMarkup) =>
-      conditionalTemplate(hasCommentedFilms, commentedFilmsBlockMarkup); // Проверяет, есть ли фильмы с комментами
-
-    return (`${isCommentedFilmsShow(`
+    return (`${this._isCommentedFilmsShow(`
     <section class="films-list--extra">
       <h2 class="films-list__title">Top commented</h2>
       <div class="films-list__container">
