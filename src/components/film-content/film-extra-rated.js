@@ -15,10 +15,10 @@ export default class FilmTopRatedComponent {
     .slice(0, FILM_EXTRA_COUNT);
 
     const hasRatedFilms = this._films.some((card) => card.rating !== 0);
-    this._isRatedFilmsShow = (ratedFilmsBlockMarkup) =>
+    const isRatedFilmsShow = (ratedFilmsBlockMarkup) =>
       conditionalTemplate(hasRatedFilms, ratedFilmsBlockMarkup); // Проверяет, есть ли фильмы с рейтингом
 
-    return (`${this._isRatedFilmsShow(`
+    return (`${isRatedFilmsShow(`
     <section class="films-list--extra">
       <h2 class="films-list__title">Top rated</h2>
       <div class="films-list__container">

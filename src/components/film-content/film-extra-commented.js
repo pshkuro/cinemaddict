@@ -15,10 +15,10 @@ export default class FilmMostCommentedComponent {
     .slice(0, FILM_EXTRA_COUNT);
 
     const hasCommentedFilms = this._films.some((card) => card.comments.length !== 0);
-    this._isCommentedFilmsShow = (commentedFilmsBlockMarkup) =>
+    const isCommentedFilmsShow = (commentedFilmsBlockMarkup) =>
       conditionalTemplate(hasCommentedFilms, commentedFilmsBlockMarkup); // Проверяет, есть ли фильмы с комментами
 
-    return (`${this._isCommentedFilmsShow(`
+    return (`${isCommentedFilmsShow(`
     <section class="films-list--extra">
       <h2 class="films-list__title">Top commented</h2>
       <div class="films-list__container">

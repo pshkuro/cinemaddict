@@ -10,7 +10,7 @@ export default class FiltersComponent {
 
 
   getTemplate() {
-    this._filterMarkup = this._filters.map((filter, index) =>
+    const filterMarkup = this._filters.map((filter, index) =>
       new FiltersMarkupComponent(filter, index === 0)
       .getTemplate())
       .join(`\n`);
@@ -18,7 +18,7 @@ export default class FiltersComponent {
     return (
       `<nav class="main-navigation">
       <div class="main-navigation__items">
-        ${this._filterMarkup}    
+        ${filterMarkup}    
       </div>
       <a href="#stats" class="main-navigation__additional">Stats</a>
     </nav>`

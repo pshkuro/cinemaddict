@@ -33,9 +33,9 @@ export default class FilmDetailsComponent {
   }
 
   getTemplate() {
-    this._formatedDate = formatDate(this._date);
-    this._filmGenreMarkup = this._genre.map((genreItem) => new FilmsGenresComponent(genreItem).getTemplate()).join(`\n`);
-    this._filmCommentsMarkup = this._comments.map((comment) =>
+    const formatedDate = formatDate(this._date);
+    const filmGenreMarkup = this._genre.map((genreItem) => new FilmsGenresComponent(genreItem).getTemplate()).join(`\n`);
+    const filmCommentsMarkup = this._comments.map((comment) =>
       new FilmsCommentsComponent(comment.emoji, comment.text, comment.author, comment.date).getTemplate()).join(`\n`);
 
     return (
@@ -79,7 +79,7 @@ export default class FilmDetailsComponent {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Release Date</td>
-                  <td class="film-details__cell">${this._formatedDate}</td>
+                  <td class="film-details__cell">${formatedDate}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Runtime</td>
@@ -92,7 +92,7 @@ export default class FilmDetailsComponent {
                 <tr class="film-details__row">
                   <td class="film-details__term">Genres</td>
                   <td class="film-details__cell">
-                    ${this._filmGenreMarkup}
+                    ${filmGenreMarkup}
                 </tr>
               </table>
     
@@ -120,7 +120,7 @@ export default class FilmDetailsComponent {
         <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${this._comments.length}</span></h3>
   
         <ul class="film-details__comments-list">
-          ${this._filmCommentsMarkup}
+          ${filmCommentsMarkup}
         </ul>
   
         <div class="film-details__new-comment">

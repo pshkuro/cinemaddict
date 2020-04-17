@@ -36,26 +36,26 @@ export default class FilmCardComponent {
   }
 
   getTemplate() {
-    this._releaseDate = this._date.getFullYear();
-    this._filmCardGenre = this._genre[0];
-    this._commentsCount = this._comments.length;
-    this._isButtonActive = (isActive) => isActive ? `film-card__controls-item--active` : ``;
+    const releaseDate = this._date.getFullYear();
+    const filmCardGenre = this._genre[0];
+    const commentsCount = this._comments.length;
+    const isButtonActive = (isActive) => isActive ? `film-card__controls-item--active` : ``;
     return (
       `<article class="film-card" data-id="${this._title}"> 
       <h3 class="film-card__title">${this._title}</h3>
       <p class="film-card__rating">${this._rating}</p>
       <p class="film-card__info">
-        <span class="film-card__year">${this._releaseDate}</span>
+        <span class="film-card__year">${releaseDate}</span>
         <span class="film-card__duration">${this._duration}</span>
-        <span class="film-card__genre">${this._filmCardGenre}</span>
+        <span class="film-card__genre">${filmCardGenre}</span>
       </p>
       <img src="./images/posters/${this._poster}" alt="" class="film-card__poster">
       <p class="film-card__description">${this._description}</p>
-      <a class="film-card__comments">${this._commentsCount} comments</a>
+      <a class="film-card__comments">${commentsCount} comments</a>
       <form class="film-card__controls">
-        <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${this._isButtonActive(this._isWatchlist)}">Add to watchlist</button>
-        <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${this._isButtonActive(this._isWatched)}">Mark as watched</button>
-        <button class="film-card__controls-item button film-card__controls-item--favorite ${this._isButtonActive(this._isFavorite)}">Mark as favorite</button>
+        <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${isButtonActive(this._isWatchlist)}">Add to watchlist</button>
+        <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${isButtonActive(this._isWatched)}">Mark as watched</button>
+        <button class="film-card__controls-item button film-card__controls-item--favorite ${isButtonActive(this._isFavorite)}">Mark as favorite</button>
       </form>
     </article>`
     );

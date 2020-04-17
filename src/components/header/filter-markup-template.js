@@ -14,10 +14,10 @@ export default class FiltersMarkupComponent {
 
 
   getTemplate() {
-    this._navigationActiveClass = this._isActive ? ` main-navigation__item--active` : ``;
+    const navigationActiveClass = this._isActive ? ` main-navigation__item--active` : ``;
 
     return (`
-    <a href="#${this._name.toLowerCase()}" class="main-navigation__item${this._navigationActiveClass}">
+    <a href="#${this._name.toLowerCase()}" class="main-navigation__item${navigationActiveClass}">
     ${this._name } ${(this._isActive || this._count > ITEM_COUNT_SHOW_NUMBER) ? `` :
         `<span class="main-navigation__item-count">${this._count}</span>`}</a>`
     );
