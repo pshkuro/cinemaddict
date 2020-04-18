@@ -4,6 +4,7 @@ import {createElement} from "../../util";
 export default class FilmsGenresComponent {
   constructor(genre) {
     this._element = null;
+
     this._genre = genre;
   }
 

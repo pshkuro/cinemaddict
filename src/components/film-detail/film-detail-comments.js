@@ -4,6 +4,7 @@ import {formatNumberDate, createElement} from "../../util";
 export default class FilmsCommentsComponent {
   constructor(emoji, text, author, date) {
     this._element = null;
+
     this._emoji = emoji;
     this._text = text;
     this._author = author;

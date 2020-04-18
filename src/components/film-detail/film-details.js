@@ -5,9 +5,25 @@ import FilmsGenresComponent from "./film-detail-ganre";
 // Генерация блока FilmsDetails
 export default class FilmDetailsComponent {
   constructor(film) {
-    this._film = film;
     this._element = null;
-    this.init();
+    const {poster, wrap, rating, info, description, comments} = film;
+    const {title, original} = wrap;
+    const {director, writers, actors, date, duration, country, genre} = info;
+
+    this._poster = poster;
+    this._original = original;
+    this._title = title;
+    this._rating = rating;
+
+    this._director = director;
+    this._writers = writers;
+    this._actors = actors;
+    this._date = date;
+    this._duration = duration;
+    this._country = country;
+    this._genre = genre;
+    this._description = description;
+    this._comments = comments;
 
     // При нажатии на кнопку, удаляется.
     this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, () => {
@@ -26,33 +42,19 @@ export default class FilmDetailsComponent {
     this.getElement().remove();
   }
 
-  init() {
-    const {poster, wrap, rating, info, description, comments} = this._film;
-    const {title, original} = wrap;
-    const {director, writers, actors, date, duration, country, genre} = info;
-
-    this._poster = poster;
-    this._original = original;
-    this._title = title;
-    this._rating = rating;
-
-    this._director = director;
-    this._writers = writers;
-    this._actors = actors;
-    this._duration = duration;
-    this._country = country;
-    this._genre = genre;
-    this._description = description;
-    this._comments = comments;
-
-    this._formatedDate = formatDate(date);
-    this._filmGenreMarkup = genre.map((genreItem) => new FilmsGenresComponent(genreItem).getTemplate()).join(`\n`);
-    this._filmCommentsMarkup = comments.map((comment) =>
-      new FilmsCommentsComponent(comment.emoji, comment.text, comment.author, comment.date).getTemplate()).join(`\n`);
-
+  onFilmDetailClose() {
+    // При нажатии на кнопку, удаляется.
+    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, () => {
+      this.getElement().remove();
+    });
   }
 
   getTemplate() {
+    const formatedDate = formatDate(this._date);
+    const filmGenreMarkup = this._genre.map((genreItem) => new FilmsGenresComponent(genreItem).getTemplate()).join(`\n`);
+    const filmCommentsMarkup = this._comments.map((comment) =>
+      new FilmsCommentsComponent(comment.emoji, comment.text, comment.author, comment.date).getTemplate()).join(`\n`);
+
     return (
       `<section class="film-details">
       <form class="film-details__inner" action="" method="get">
@@ -94,7 +96,7 @@ export default class FilmDetailsComponent {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Release Date</td>
-                  <td class="film-details__cell">${this._formatedDate}</td>
+                  <td class="film-details__cell">${formatedDate}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Runtime</td>
@@ -107,7 +109,7 @@ export default class FilmDetailsComponent {
                 <tr class="film-details__row">
                   <td class="film-details__term">Genres</td>
                   <td class="film-details__cell">
-                    ${this._filmGenreMarkup}
+                    ${filmGenreMarkup}
                 </tr>
               </table>
     
@@ -135,7 +137,7 @@ export default class FilmDetailsComponent {
         <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${this._comments.length}</span></h3>
   
         <ul class="film-details__comments-list">
-          ${this._filmCommentsMarkup}
+          ${filmCommentsMarkup}
         </ul>
   
         <div class="film-details__new-comment">
@@ -177,6 +179,7 @@ export default class FilmDetailsComponent {
   getElement() {
     if (!this._element) {
       this._element = createElement(this.getTemplate());
+      this.onFilmDetailClose();
     }
     return this._element;
   }

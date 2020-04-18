@@ -4,20 +4,18 @@ import FilmCardComponent from "./film-card";
 
 export default class FilmMostCommentedComponent {
   constructor(films) {
-    this._films = films;
     this._element = null;
-    this.init();
-  }
 
-  init() {
+    this._films = films.slice()
+    .sort((a, b) => b.comments.length - a.comments.length); // Отсортированный массив
     this._commentedFilmsData = this._films
-    .slice()
-    .sort((a, b) => b.comments.length - a.comments.length)
     .slice(0, FILM_EXTRA_COUNT);
 
-    const hasCommentedFilms = this._films.some((card) => card.comments.length !== 0);
-    this._isCommentedFilmsShow = (commentedFilmsBlockMarkup) =>
-      conditionalTemplate(hasCommentedFilms, commentedFilmsBlockMarkup); // Проверяет, есть ли фильмы с комментами
+  }
+
+  _isCommentedFilmsShow(commentedFilmsBlockMarkup) {
+    const hasCommentedFilms = this._films.some((card) => card.comments.length);
+    return conditionalTemplate(hasCommentedFilms, commentedFilmsBlockMarkup);
   }
 
   getTemplate() {

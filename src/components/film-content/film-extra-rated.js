@@ -4,22 +4,20 @@ import FilmCardComponent from "./film-card";
 
 export default class FilmTopRatedComponent {
   constructor(films) {
-    this._films = films;
     this._element = null;
-    this.init();
-  }
 
-  init() {
+    this._films = films.slice()
+    .sort((a, b) => b.rating - a.rating);
     this._ratedFilmsData = this._films
-    .slice()
-    .sort((a, b) => b.rating - a.rating)
     .slice(0, FILM_EXTRA_COUNT);
 
-    const hasRatedFilms = this._films.some((card) => card.rating !== 0);
-    this._isRatedFilmsShow = (ratedFilmsBlockMarkup) =>
-      conditionalTemplate(hasRatedFilms, ratedFilmsBlockMarkup); // Проверяет, есть ли фильмы с рейтингом
-
   }
+
+  _isRatedFilmsShow(ratedFilmsBlockMarkup) {
+    const hasRatedFilms = this._films.some((card) => card.rating);
+    return conditionalTemplate(hasRatedFilms, ratedFilmsBlockMarkup); // Проверяет, есть ли фильмы с рейтингом
+  }
+
 
   getTemplate() {
     return (`${this._isRatedFilmsShow(`
