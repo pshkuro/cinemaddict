@@ -1,15 +1,14 @@
-import {createElement} from "../util";
+import {createElement} from "../../util";
 
-// Генерация статистики фильмов
-export default class FilmCountComponent {
-  constructor(films) {
-    this._films = films;
+// Генерация Film Content
+export default class FilmContentComponent {
+  constructor() {
     this._element = null;
   }
 
   getTemplate() {
     return (
-      `<p>${this._films.length} movies inside</p>`
+      `<section class="films"></section>`
     );
   }
 
@@ -17,6 +16,7 @@ export default class FilmCountComponent {
     if (!this._element) {
       this._element = createElement(this.getTemplate());
     }
+
     return this._element;
   }
 
