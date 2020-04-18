@@ -14,7 +14,7 @@ import {generateFilters} from "./mock/filter";
 import {render, RenderPosition} from "./util";
 
 
-const CARD_FILM_COUNT = 0;
+const CARD_FILM_COUNT = 12;
 const SHOWING_CARDS_COUNT_BY_BUTTON = 5;
 const SHOWING_CARDS_COUNT_ON_START = 5;
 
