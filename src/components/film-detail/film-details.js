@@ -28,6 +28,7 @@ export default class FilmDetailsComponent {
 
   onFilmDetailCloseClick() {
     this.getElement().remove();
+    document.removeEventListener(`keydown`, this.onFilmDetailClose.onFilmEscClose);
   }
 
   onFilmDetailClose() {
@@ -36,13 +37,15 @@ export default class FilmDetailsComponent {
       this.onFilmDetailCloseClick();
     });
 
-    // И на Esc
-    document.addEventListener(`keydown`, (evt) => {
+    const onFilmEscClose = (evt) => {
       const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
       if (isEscKey) {
         this.onFilmDetailCloseClick();
       }
-    });
+    };
+
+    // И на Esc
+    document.addEventListener(`keydown`, onFilmEscClose);
   }
 
   getTemplate() {
