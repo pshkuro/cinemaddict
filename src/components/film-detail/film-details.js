@@ -6,7 +6,6 @@ import FilmsGenresComponent from "./film-detail-ganre";
 export default class FilmDetailsComponent {
   constructor(film) {
     this._element = null;
-
     const {poster, wrap, rating, info, description, comments} = film;
     const {title, original} = wrap;
     const {director, writers, actors, date, duration, country, genre} = info;
@@ -25,13 +24,31 @@ export default class FilmDetailsComponent {
     this._genre = genre;
     this._description = description;
     this._comments = comments;
+
+    this.onFilmEscClose = this.onFilmEscClose.bind(this);
+  }
+
+  onFilmDetailCloseClick() {
+    this.getElement().remove();
+    document.removeEventListener(`keydown`, this.onFilmEscClose);
+  }
+
+  onFilmEscClose(evt) {
+    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
+    if (isEscKey) {
+      this.onFilmDetailCloseClick();
+    }
   }
 
   onFilmDetailClose() {
     // При нажатии на кнопку, удаляется.
     this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, () => {
-      this.getElement().remove();
+      this.onFilmDetailCloseClick();
     });
+
+
+    // И на Esc
+    document.addEventListener(`keydown`, this.onFilmEscClose);
   }
 
   getTemplate() {

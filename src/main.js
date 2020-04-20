@@ -3,6 +3,7 @@ import FiltersComponent from "./components/header/menu";
 import SortComponent from "./components/header/sort";
 import FilmContentComponent from "./components/film-content/film-content";
 import FilmsListComponent from "./components/film-content/films-list";
+import NoFilmsComponent from "./components/film-content/no-films";
 import FilmCardComponent from "./components/film-content/film-card";
 import ShowMoreButtonComponent from "./components/film-content/show-more-button";
 import FilmTopRatedComponent from "./components/film-content/film-extra-rated";
@@ -42,6 +43,13 @@ const renderFilmsContent = (filmsContentComponent, films) => {
   // Создает filmList
   const filmsListComponent = new FilmsListComponent();
   render(filmsContentComponent.getElement(), filmsListComponent.getElement(), RenderPosition.BEFOREEND);
+
+  // Если нет фильмов, выводим сообщение-заглушку
+  const noFilms = films.length === 0;
+  if (noFilms) {
+    render(filmsListComponent.getElement(), new NoFilmsComponent().getElement(), RenderPosition.BEFOREEND);
+    return; // Сразу выходим, чтобы дальше эл-ты блока не отрисовывались
+  }
 
   // Рендерим карточки фильмов
   const filmListContainer = filmsListComponent.getElement().querySelector(`.films-list__container`);
