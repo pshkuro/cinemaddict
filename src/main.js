@@ -11,7 +11,7 @@ import FilmMostCommentedComponent from "./components/film-content/film-extra-com
 import FilmCountComponent from "./components/statistic";
 import {generateCards} from "./mock/film-card";
 import {generateFilters} from "./mock/filter";
-import {render, RenderPosition} from "./utils/render";
+import {render, RenderPosition, remove} from "./utils/render";
 
 
 const CARD_FILM_COUNT = 12;
@@ -65,7 +65,7 @@ const renderFilmsContent = (filmsContentComponent, films) => {
   const showMoreButtonComponent = new ShowMoreButtonComponent();
   render(filmsListComponent.getElement(), showMoreButtonComponent, RenderPosition.BEFOREEND);
 
-  showMoreButtonComponent.getElement().addEventListener(`click`, () => {
+  showMoreButtonComponent.setClickHandler(() => {
     const prevCardsCount = showingCardsCount;
     showingCardsCount = showingCardsCount + SHOWING_CARDS_COUNT_BY_BUTTON;
 
@@ -75,8 +75,7 @@ const renderFilmsContent = (filmsContentComponent, films) => {
     });
 
     if (showingCardsCount >= films.length) {
-      showMoreButtonComponent.getElement().remove();
-      showMoreButtonComponent.removeElement();
+      remove(showMoreButtonComponent);
     }
   });
 

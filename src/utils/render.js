@@ -18,6 +18,11 @@ export const render = (container, component, place) => {
   }
 };
 
+export const remove = (component) => {
+  component.getElement().remove();
+  component.removeElement();
+};
+
 // Функция для создания DOM-элемента на основе шаблона разметки
 export const createElement = (template) => {
   const newElement = document.createElement(`div`);

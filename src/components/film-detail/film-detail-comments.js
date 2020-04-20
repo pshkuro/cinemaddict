@@ -1,4 +1,4 @@
-import {formatNumberDate} from "../../util";
+import {formatNumberDate} from "../../utils/date";
 import AbstractComponent from "../abstract-component";
 
 // Генерация 1 комментария
