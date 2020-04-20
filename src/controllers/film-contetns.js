@@ -18,7 +18,7 @@ const renderFilmCard = (filmCardsContainer, film) => {
 
 
 // Содержит логику рендеринга блока FilmContent на странице
-export default class FilmContentController {
+export default class PageController {
   constructor(container) {
     this._container = container;
 

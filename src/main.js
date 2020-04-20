@@ -6,7 +6,7 @@ import FilmCountComponent from "./components/statistic";
 import {generateCards} from "./mock/film-card";
 import {generateFilters} from "./mock/filter";
 import {render, RenderPosition} from "./utils/render";
-import FilmContentController from "./controllers/film-contetns";
+import PageController from "./controllers/film-contetns";
 
 
 const CARD_FILM_COUNT = 12;
@@ -26,7 +26,7 @@ render(mainPageElement, new SortComponent(), RenderPosition.BEFOREEND);
 const filmsContentComponent = new FilmContentComponent();
 render(mainPageElement, filmsContentComponent, RenderPosition.BEFOREEND);
 // Отрисовка логики внутри этого блока
-const filmContentController = new FilmContentController(filmsContentComponent); // передаем контейнер, внутри которого все это происходит
+const filmContentController = new PageController(filmsContentComponent); // передаем контейнер, внутри которого все это происходит
 filmContentController.render(films); // Передаем данные для отрисовки логики
 
 
