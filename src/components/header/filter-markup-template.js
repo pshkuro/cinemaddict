@@ -1,11 +1,11 @@
-import {createElement} from "../../util";
+import AbstractComponent from "../abstract-component";
 const ITEM_COUNT_SHOW_NUMBER = 5;
 
 // Генерация 1 фильтра
-export default class FiltersMarkupComponent {
+export default class FiltersMarkupComponent extends AbstractComponent {
   constructor(filters, isActive) {
+    super();
     this._isActive = isActive;
-    this._element = null;
 
     const {name, count} = filters;
     this._name = name;
@@ -22,17 +22,5 @@ export default class FiltersMarkupComponent {
         `<span class="main-navigation__item-count">${this._count}</span>`}</a>`
     );
   }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
-
 }
 

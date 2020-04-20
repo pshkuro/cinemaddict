@@ -1,11 +1,11 @@
-import {createElement} from "../../util";
+import AbstractComponent from "../abstract-component";
 import FiltersMarkupComponent from "./filter-markup-template";
 
 // Генерация блока фильтров
-export default class FiltersComponent {
+export default class FiltersComponent extends AbstractComponent {
   constructor(filters) {
+    super();
     this._filters = filters;
-    this._element = null;
   }
 
 
@@ -24,16 +24,4 @@ export default class FiltersComponent {
     </nav>`
     );
   }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
-
 }

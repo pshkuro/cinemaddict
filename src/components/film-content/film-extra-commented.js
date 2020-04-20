@@ -1,10 +1,11 @@
 import {conditionalTemplate, createElement, createElements, render, RenderPosition} from "../../util";
 import {FILM_EXTRA_COUNT} from "../../const";
 import FilmCardComponent from "./film-card";
+import AbstractComponent from "../abstract-component";
 
-export default class FilmMostCommentedComponent {
+export default class FilmMostCommentedComponent extends AbstractComponent {
   constructor(films) {
-    this._element = null;
+    super();
 
     this._films = films.slice()
     .sort((a, b) => b.comments.length - a.comments.length); // Отсортированный массив
@@ -35,10 +36,6 @@ export default class FilmMostCommentedComponent {
     }
 
     return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 

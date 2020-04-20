@@ -1,11 +1,7 @@
-import {createElement} from "../../util";
+import AbstractComponent from "../abstract-component";
 
 // Генерация Звания пользователя
-export default class ProfileComponent {
-  constructor() {
-    this._element = null;
-  }
-
+export default class ProfileComponent extends AbstractComponent {
   getTemplate() {
     return (
       `<section class="header__profile profile">
@@ -13,17 +9,5 @@ export default class ProfileComponent {
       <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
     </section>`
     );
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

@@ -1,11 +1,12 @@
-import {createElement} from "../../util";
+import AbstractComponent from "../abstract-component";
 import FilmDetailsComponent from "../film-detail/film-details";
+import {createElement} from "../../util";
 
 // Генерация карточки фильма
-export default class FilmCardComponent {
+export default class FilmCardComponent extends AbstractComponent {
   constructor(film) {
+    super();
     this._film = film;
-    this._element = null;
     const {poster, wrap, rating, info, description, controls, comments} = this._film;
     const {title} = wrap;
     const {date, duration, genre} = info;
@@ -77,7 +78,4 @@ export default class FilmCardComponent {
     return this._element;
   }
 
-  removeElement() {
-    this._element = null;
-  }
 }
