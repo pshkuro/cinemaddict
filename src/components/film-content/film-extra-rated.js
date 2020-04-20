@@ -1,10 +1,12 @@
-import {conditionalTemplate, createElement, createElements, render, RenderPosition} from "../../util";
+import {createElement, createElements, render, RenderPosition} from "../../utils/render";
+import {conditionalTemplate} from "../../utils/common";
 import {FILM_EXTRA_COUNT} from "../../const";
 import FilmCardComponent from "./film-card";
+import AbstractComponent from "../abstract-component";
 
-export default class FilmTopRatedComponent {
+export default class FilmTopRatedComponent extends AbstractComponent {
   constructor(films) {
-    this._element = null;
+    super();
 
     this._films = films.slice()
     .sort((a, b) => b.rating - a.rating);
@@ -36,9 +38,5 @@ export default class FilmTopRatedComponent {
     }
 
     return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

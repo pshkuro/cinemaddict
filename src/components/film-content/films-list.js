@@ -1,11 +1,7 @@
-import {createElement} from "../../util";
+import AbstractComponent from "../abstract-component";
 
 // Генерация Контейнера списка фильмов
-export default class FilmsListComponent {
-  constructor() {
-    this._element = null;
-  }
-
+export default class FilmsListComponent extends AbstractComponent {
   getTemplate() {
     return (
       `<section class="films-list">
@@ -13,17 +9,5 @@ export default class FilmsListComponent {
       <div class="films-list__container">
      </div>
       </section>`);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

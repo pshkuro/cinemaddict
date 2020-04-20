@@ -1,7 +1,8 @@
 import {FILMS_POSTERS, FILMS_NAMES, FILMS_DESCRIPTION, FILM_DIRECTORS, FILM_WRITERS, FILM_ACTORS,
   FILM_COUNTRY, FILM_GENRE, FILM_COMMENTS_EMOJI} from "../const";
 import {getRandomArrayItem, getRandomCountRandomArrayItem, getRandomIntegerRoundingNumber,
-  getRandomDate, formatTime, getRandomIntegerNumber} from "../util";
+  getRandomIntegerNumber} from "../utils/common";
+import {formatTime, getRandomDate} from "../utils/date";
 
 const FILM_DURATION_WORDS_COUNT = `5`;
 

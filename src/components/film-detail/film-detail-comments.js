@@ -1,9 +1,10 @@
-import {formatNumberDate, createElement} from "../../util";
+import {formatNumberDate} from "../../utils/date";
+import AbstractComponent from "../abstract-component";
 
 // Генерация 1 комментария
-export default class FilmsCommentsComponent {
+export default class FilmsCommentsComponent extends AbstractComponent {
   constructor(emoji, text, author, date) {
-    this._element = null;
+    super();
 
     this._emoji = emoji;
     this._text = text;
@@ -25,18 +26,6 @@ export default class FilmsCommentsComponent {
     </p>
   </div>
 </li>`);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 

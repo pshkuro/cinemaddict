@@ -1,11 +1,13 @@
-import {formatDate, createElement} from "../../util";
+import {formatDate} from "../../utils/date";
+import {createElement} from "../../utils/render";
 import FilmsCommentsComponent from "./film-detail-comments";
 import FilmsGenresComponent from "./film-detail-ganre";
+import AbstractComponent from "../abstract-component";
 
 // Генерация блока FilmsDetails
-export default class FilmDetailsComponent {
+export default class FilmDetailsComponent extends AbstractComponent {
   constructor(film) {
-    this._element = null;
+    super();
     const {poster, wrap, rating, info, description, comments} = film;
     const {title, original} = wrap;
     const {director, writers, actors, date, duration, country, genre} = info;
@@ -184,9 +186,5 @@ export default class FilmDetailsComponent {
       this.onFilmDetailClose();
     }
     return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
