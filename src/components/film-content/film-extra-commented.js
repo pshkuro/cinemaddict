@@ -1,4 +1,5 @@
-import {conditionalTemplate, createElement, createElements, render, RenderPosition} from "../../util";
+import {createElement, createElements, render, RenderPosition} from "../../utils/render";
+import {conditionalTemplate} from "../../util";
 import {FILM_EXTRA_COUNT} from "../../const";
 import FilmCardComponent from "./film-card";
 import AbstractComponent from "../abstract-component";

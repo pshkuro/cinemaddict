@@ -11,7 +11,7 @@ import FilmMostCommentedComponent from "./components/film-content/film-extra-com
 import FilmCountComponent from "./components/statistic";
 import {generateCards} from "./mock/film-card";
 import {generateFilters} from "./mock/filter";
-import {render, RenderPosition} from "./util";
+import {render, RenderPosition} from "./utils/render";
 
 
 const CARD_FILM_COUNT = 12;
@@ -25,29 +25,29 @@ const footerStatisticsElement = document.querySelector(`.footer__statistics`);
 const cards = generateCards(CARD_FILM_COUNT); // Массив объектов карточек кол-ом CARD_FILM_COUNT
 const filters = generateFilters(cards);
 
-render(headerPageElement, new ProfileComponent().getElement(), RenderPosition.BEFOREEND);
-render(mainPageElement, new FiltersComponent(filters).getElement(), RenderPosition.BEFOREEND);
-render(mainPageElement, new SortComponent().getElement(), RenderPosition.BEFOREEND);
+render(headerPageElement, new ProfileComponent(), RenderPosition.BEFOREEND);
+render(mainPageElement, new FiltersComponent(filters), RenderPosition.BEFOREEND);
+render(mainPageElement, new SortComponent(), RenderPosition.BEFOREEND);
 
 
 // Логика 1 карточки фильма
 const renderFilmCard = (filmCardsContainer, film) => {
   const filmCardComponent = new FilmCardComponent(film);
-  render(filmCardsContainer, filmCardComponent.getElement(), RenderPosition.BEFOREEND);
+  render(filmCardsContainer, filmCardComponent, RenderPosition.BEFOREEND);
 };
 
 // Логика блока FilmContent
 const renderFilmsContent = (filmsContentComponent, films) => {
-  render(mainPageElement, filmsContentComponent.getElement(), RenderPosition.BEFOREEND);
+  render(mainPageElement, filmsContentComponent, RenderPosition.BEFOREEND);
 
   // Создает filmList
   const filmsListComponent = new FilmsListComponent();
-  render(filmsContentComponent.getElement(), filmsListComponent.getElement(), RenderPosition.BEFOREEND);
+  render(filmsContentComponent.getElement(), filmsListComponent, RenderPosition.BEFOREEND);
 
   // Если нет фильмов, выводим сообщение-заглушку
   const noFilms = films.length === 0;
   if (noFilms) {
-    render(filmsListComponent.getElement(), new NoFilmsComponent().getElement(), RenderPosition.BEFOREEND);
+    render(filmsListComponent.getElement(), new NoFilmsComponent(), RenderPosition.BEFOREEND);
     return; // Сразу выходим, чтобы дальше эл-ты блока не отрисовывались
   }
 
@@ -63,7 +63,7 @@ const renderFilmsContent = (filmsContentComponent, films) => {
   // Логика кнопки Show More
   // при нажатии продгружаем фмльмы
   const showMoreButtonComponent = new ShowMoreButtonComponent();
-  render(filmsListComponent.getElement(), showMoreButtonComponent.getElement(), RenderPosition.BEFOREEND);
+  render(filmsListComponent.getElement(), showMoreButtonComponent, RenderPosition.BEFOREEND);
 
   showMoreButtonComponent.getElement().addEventListener(`click`, () => {
     const prevCardsCount = showingCardsCount;
@@ -81,8 +81,8 @@ const renderFilmsContent = (filmsContentComponent, films) => {
   });
 
   // Рендерим Rated и Commented в FilmContent
-  render(filmsContentComponent.getElement(), new FilmTopRatedComponent(films).getElement(), RenderPosition.BEFOREEND);
-  render(filmsContentComponent.getElement(), new FilmMostCommentedComponent(films).getElement(), RenderPosition.BEFOREEND);
+  render(filmsContentComponent.getElement(), new FilmTopRatedComponent(films), RenderPosition.BEFOREEND);
+  render(filmsContentComponent.getElement(), new FilmMostCommentedComponent(films), RenderPosition.BEFOREEND);
 };
 
 // Рендерим блок FilmContent на страницу
@@ -90,5 +90,5 @@ const filmsContentComponent = new FilmContentComponent();
 renderFilmsContent(filmsContentComponent, cards);
 
 // Рендерим количество фильмов в футер
-render(footerStatisticsElement, new FilmCountComponent(cards).getElement(), RenderPosition.BEFOREEND);
+render(footerStatisticsElement, new FilmCountComponent(cards), RenderPosition.BEFOREEND);
 

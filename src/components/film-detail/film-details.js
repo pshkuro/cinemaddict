@@ -1,4 +1,5 @@
-import {formatDate, createElement} from "../../util";
+import {formatDate} from "../../util";
+import {createElement} from "../../utils/render";
 import FilmsCommentsComponent from "./film-detail-comments";
 import FilmsGenresComponent from "./film-detail-ganre";
 import AbstractComponent from "../abstract-component";

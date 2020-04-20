@@ -1,6 +1,6 @@
 import AbstractComponent from "../abstract-component";
 import FilmDetailsComponent from "../film-detail/film-details";
-import {createElement} from "../../util";
+import {createElement} from "../../utils/render";
 
 // Генерация карточки фильма
 export default class FilmCardComponent extends AbstractComponent {
