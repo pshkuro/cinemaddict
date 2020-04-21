@@ -1,6 +1,6 @@
 import AbstractComponent from "../abstract-component";
 
-const SortType = {
+export const SortType = {
   DEFAULT: `default`,
   DATE: `date`,
   RATING: `rating`
@@ -37,12 +37,34 @@ export default class SortComponent extends AbstractComponent {
         return;
       }
 
+
       // По какому типу сорт произошел клик
       const sortType = evt.target.dataset.sortType;
       // Атрибуты, состоящие из нескольких слов, к примеру data-order-state,
       // становятся свойствами, записанными с помощью верблюжьей нотации: dataset.orderState.
       if (this._currentSortType === sortType) {
         return;
+      }
+
+      // Пыталась вынести, чтобы переиспользовать
+      // const activateElement = (container, activeClass) => {
+      //   const activeClickElement = evt.target;
+      //   const activeElement = container.querySelector(`.${activeClass}`);
+
+      //   if (activeElement) {
+      //     activeElement.classList.remove(activeClass);
+      //     activeClickElement.classList.add(activeClass);
+      //   }
+      // };
+
+      // activateElement(this.getElement(), `sort__button--active`);
+
+      // Активирует ссылку при клике
+      const activeClickSortElement = evt.target;
+      const activeSortElement = this.getElement().querySelector(`.sort__button--active`);
+      if (activeSortElement) {
+        activeSortElement.classList.remove(`sort__button--active`);
+        activeClickSortElement.classList.add(`sort__button--active`);
       }
 
       this._currentSortType = sortType;

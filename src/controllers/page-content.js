@@ -1,4 +1,4 @@
-import SortComponent from "../components/header/sort";
+import SortComponent, {SortType} from "../components/header/sort";
 import FilmsListComponent from "../components/film-content/films-list";
 import NoFilmsComponent from "../components/film-content/no-films";
 import FilmCardComponent from "../components/film-content/film-card";
@@ -6,7 +6,6 @@ import ShowMoreButtonComponent from "../components/film-content/show-more-button
 import FilmTopRatedComponent from "../components/film-content/film-extra-rated";
 import FilmMostCommentedComponent from "../components/film-content/film-extra-commented";
 import {render, RenderPosition, remove} from "../utils/render";
-import {mainPageElement} from "../main";
 
 
 const SHOWING_CARDS_COUNT_BY_BUTTON = 5;
@@ -18,6 +17,30 @@ const renderFilmCard = (filmCardsContainer, film) => {
   render(filmCardsContainer, filmCardComponent, RenderPosition.BEFOREEND);
 };
 
+const renderFilms = (container, films) => {
+  films.forEach((film) => {
+    renderFilmCard(container, film);
+  });
+};
+
+const getSortedFilms = (films, sortType, from, before) => {
+  let sortedFilms = [];
+  const showingFilms = films.slice();
+
+  switch (sortType) {
+    case SortType.DEFAULT:
+      sortedFilms = showingFilms;
+      break;
+    case SortType.DATE:
+      sortedFilms = showingFilms.sort((a, b) => b.info.date - a.info.date);
+      break;
+    case SortType.RATING:
+      sortedFilms = showingFilms.sort((a, b) => b.rating - a.rating);
+      break;
+  }
+
+  return sortedFilms.slice(from, before);
+};
 
 // Содержит логику рендеринга блока FilmContent на странице
 export default class PageController {
@@ -27,11 +50,35 @@ export default class PageController {
     this._filmsListComponent = new FilmsListComponent();
     this._noFilmsComponent = new NoFilmsComponent();
     this._showMoreButtonComponent = new ShowMoreButtonComponent();
+    this._sortComponent = new SortComponent();
   }
 
   render(films) {
-    render(mainPageElement, new SortComponent(), RenderPosition.BEFOREEND);
+
+    // Логика кнопки Show More
+    // при нажатии продгружаем фмльмы
+    const renderShowMoreButton = () => {
+      if (showingCardsCount >= films.length) {
+        return;
+      }
+      render(this._filmsListComponent.getElement(), this._showMoreButtonComponent, RenderPosition.BEFOREEND);
+
+      this._showMoreButtonComponent.setClickHandler(() => {
+        const prevCardsCount = showingCardsCount;
+        showingCardsCount = showingCardsCount + SHOWING_CARDS_COUNT_BY_BUTTON;
+
+        const sortedFilms = getSortedFilms(films, this._sortComponent.getSortType(), prevCardsCount, showingCardsCount);
+        renderFilms(filmListContainer, sortedFilms);
+
+        if (showingCardsCount >= films.length) {
+          remove(this._showMoreButtonComponent);
+        }
+      });
+
+    };
+
     const container = this._container.getElement();
+    render(container, this._sortComponent, RenderPosition.BEFOREEND);
 
     // Создает filmList
     render(container, this._filmsListComponent, RenderPosition.BEFOREEND);
@@ -46,28 +93,24 @@ export default class PageController {
     // Рендерим карточки фильмов
     const filmListContainer = this._filmsListComponent.getElement().querySelector(`.films-list__container`);
     let showingCardsCount = SHOWING_CARDS_COUNT_ON_START;
-    films.slice(0, showingCardsCount)
-    .forEach((film) => {
-      renderFilmCard(filmListContainer, film);
-    });
+    renderFilms(filmListContainer, films.slice(0, showingCardsCount));
 
+    renderShowMoreButton();
 
-    // Логика кнопки Show More
-    // при нажатии продгружаем фмльмы
-    render(this._filmsListComponent.getElement(), this._showMoreButtonComponent, RenderPosition.BEFOREEND);
+    // Сортировка
+    this._sortComponent.setSortTypeHandler((sortType) => {
+      showingCardsCount = SHOWING_CARDS_COUNT_BY_BUTTON;
 
-    this._showMoreButtonComponent.setClickHandler(() => {
-      const prevCardsCount = showingCardsCount;
-      showingCardsCount = showingCardsCount + SHOWING_CARDS_COUNT_BY_BUTTON;
+      const sortedFilms = getSortedFilms(films, sortType, 0, showingCardsCount);
+      filmListContainer.innerHTML = ``;
 
-      films.slice(prevCardsCount, showingCardsCount)
-    .forEach((film) => {
-      renderFilmCard(filmListContainer, film);
-    });
+      renderFilms(filmListContainer, sortedFilms);
 
-      if (showingCardsCount >= films.length) {
-        remove(this._showMoreButtonComponent);
+      const showMoreButton = container.querySelector(`.films-list__show-more`);
+      if (!showMoreButton) {
+        renderShowMoreButton();
       }
+
     });
 
     // Рендерим Rated и Commented в FilmContent
@@ -75,4 +118,3 @@ export default class PageController {
     render(container, new FilmMostCommentedComponent(films), RenderPosition.BEFOREEND);
   }
 }
-
