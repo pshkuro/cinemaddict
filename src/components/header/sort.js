@@ -1,4 +1,5 @@
 import AbstractComponent from "../abstract-component";
+import {activateElement} from "../../utils/interactivity";
 
 export const SortType = {
   DEFAULT: `default`,
@@ -46,26 +47,9 @@ export default class SortComponent extends AbstractComponent {
         return;
       }
 
-      // Пыталась вынести, чтобы переиспользовать
-      // const activateElement = (container, activeClass) => {
-      //   const activeClickElement = evt.target;
-      //   const activeElement = container.querySelector(`.${activeClass}`);
-
-      //   if (activeElement) {
-      //     activeElement.classList.remove(activeClass);
-      //     activeClickElement.classList.add(activeClass);
-      //   }
-      // };
-
-      // activateElement(this.getElement(), `sort__button--active`);
-
       // Активирует ссылку при клике
-      const activeClickSortElement = evt.target;
-      const activeSortElement = this.getElement().querySelector(`.sort__button--active`);
-      if (activeSortElement) {
-        activeSortElement.classList.remove(`sort__button--active`);
-        activeClickSortElement.classList.add(`sort__button--active`);
-      }
+      activateElement(evt.target, this.getElement(), `sort__button--active`);
+
 
       this._currentSortType = sortType;
       handler(this._currentSortType);
