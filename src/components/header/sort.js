@@ -1,14 +1,52 @@
 import AbstractComponent from "../abstract-component";
 
+const SortType = {
+  DEFAULT: `default`,
+  DATE: `date`,
+  RATING: `rating`
+};
+
 // Генерерация Сортировки
 export default class SortComponent extends AbstractComponent {
+  constructor() {
+    super();
+
+    this._currentSortType = SortType.DEFAULT;
+  }
+
   getTemplate() {
     return (
       `<ul class="sort">
-      <li><a href="#" class="sort__button sort__button--active">Sort by default</a></li>
-      <li><a href="#" class="sort__button">Sort by date</a></li>
-      <li><a href="#" class="sort__button">Sort by rating</a></li>
+      <li><a href="#" data-sort-type="${SortType.DEFAULT}" class="sort__button sort__button--active">Sort by default</a></li>
+      <li><a href="#" data-sort-type="${SortType.DATE}" class="sort__button">Sort by date</a></li>
+      <li><a href="#" data-sort-type="${SortType.RATING}" class="sort__button">Sort by rating</a></li>
     </ul>`
     );
+  }
+
+  getSortType() {
+    return this._currentSortType;
+  }
+
+  setSortTypeHandler(handler) {
+    this.getElement().addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+
+      //  tag name is always in the canonical upper-case form
+      if (evt.target.tagName !== `A`) {
+        return;
+      }
+
+      // По какому типу сорт произошел клик
+      const sortType = evt.target.dataset.sortType;
+      // Атрибуты, состоящие из нескольких слов, к примеру data-order-state,
+      // становятся свойствами, записанными с помощью верблюжьей нотации: dataset.orderState.
+      if (this._currentSortType === sortType) {
+        return;
+      }
+
+      this._currentSortType = sortType;
+      handler(this._currentSortType);
+    });
   }
 }

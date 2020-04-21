@@ -1,3 +1,4 @@
+import SortComponent from "../components/header/sort";
 import FilmsListComponent from "../components/film-content/films-list";
 import NoFilmsComponent from "../components/film-content/no-films";
 import FilmCardComponent from "../components/film-content/film-card";
@@ -5,6 +6,7 @@ import ShowMoreButtonComponent from "../components/film-content/show-more-button
 import FilmTopRatedComponent from "../components/film-content/film-extra-rated";
 import FilmMostCommentedComponent from "../components/film-content/film-extra-commented";
 import {render, RenderPosition, remove} from "../utils/render";
+import {mainPageElement} from "../main";
 
 
 const SHOWING_CARDS_COUNT_BY_BUTTON = 5;
@@ -28,6 +30,7 @@ export default class PageController {
   }
 
   render(films) {
+    render(mainPageElement, new SortComponent(), RenderPosition.BEFOREEND);
     const container = this._container.getElement();
 
     // Создает filmList

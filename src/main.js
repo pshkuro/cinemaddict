@@ -1,12 +1,12 @@
 import ProfileComponent from './components/header/profile';
 import FiltersComponent from "./components/header/menu";
-import SortComponent from "./components/header/sort";
 import FilmContentComponent from "./components/film-content/film-content";
 import FilmCountComponent from "./components/statistic";
 import {generateCards} from "./mock/film-card";
 import {generateFilters} from "./mock/filter";
 import {render, RenderPosition} from "./utils/render";
-import PageController from "./controllers/film-contetns";
+import PageController from "./controllers/page-content";
+import SortComponent from "./components/header/sort";
 
 
 const CARD_FILM_COUNT = 12;
