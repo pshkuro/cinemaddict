@@ -1,12 +1,11 @@
 import ProfileComponent from './components/header/profile';
 import FiltersComponent from "./components/header/menu";
-import SortComponent from "./components/header/sort";
 import FilmContentComponent from "./components/film-content/film-content";
 import FilmCountComponent from "./components/statistic";
 import {generateCards} from "./mock/film-card";
 import {generateFilters} from "./mock/filter";
 import {render, RenderPosition} from "./utils/render";
-import PageController from "./controllers/film-contetns";
+import PageController from "./controllers/page-content";
 
 
 const CARD_FILM_COUNT = 12;
@@ -20,7 +19,6 @@ const filters = generateFilters(films);
 
 render(headerPageElement, new ProfileComponent(), RenderPosition.BEFOREEND);
 render(mainPageElement, new FiltersComponent(filters), RenderPosition.BEFOREEND);
-render(mainPageElement, new SortComponent(), RenderPosition.BEFOREEND);
 
 // Рендерим блок FilmContent на страницу
 const filmsContentComponent = new FilmContentComponent();
