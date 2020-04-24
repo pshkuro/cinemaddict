@@ -8,9 +8,10 @@ import AbstractComponent from "../abstract-component";
 export default class FilmDetailsComponent extends AbstractComponent {
   constructor(film) {
     super();
-    const {poster, wrap, rating, info, description, comments} = film;
+    const {poster, wrap, rating, info, description, controls, comments} = film;
     const {title, original} = wrap;
     const {director, writers, actors, date, duration, country, genre} = info;
+    const {isWatchlist, isWatched, isFavorite} = controls;
 
     this._poster = poster;
     this._original = original;
@@ -25,7 +26,14 @@ export default class FilmDetailsComponent extends AbstractComponent {
     this._country = country;
     this._genre = genre;
     this._description = description;
+    this._isWatchlist = isWatchlist;
+    this._isWatched = isWatched;
+    this._isFavorite = isFavorite;
     this._comments = comments;
+  }
+
+  _isButtonActive(isActive) {
+    return isActive ? `checked` : ``;
   }
 
 
@@ -100,13 +108,13 @@ export default class FilmDetailsComponent extends AbstractComponent {
           </div>
     
           <section class="film-details__controls">
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist">
-            <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
+            <input type="checkbox" class="film-details__control-input visually-hidden" ${this._isButtonActive(this._isWatchlist)} id="watchlist" name="watchlist">
+            <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist ">Add to watchlist</label>
     
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched">
+            <input type="checkbox" class="film-details__control-input visually-hidden" ${this._isButtonActive(this._isWatched)} id="watched" name="watched">
             <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
     
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite">
+            <input type="checkbox" class="film-details__control-input visually-hidden" ${this._isButtonActive(this._isFavorite)} id="favorite" name="favorite">
             <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
           </section>
         </div>
@@ -161,5 +169,20 @@ export default class FilmDetailsComponent extends AbstractComponent {
       this._element = createElement(this.getTemplate());
     }
     return this._element;
+  }
+
+  setWatchlistButtonClickHandler(handler) {
+    this.getElement().querySelector(`.film-details__control-label--watchlist`)
+    .addEventListener(`click`, handler);
+  }
+
+  setWatchedButtonClickHandler(handler) {
+    this.getElement().querySelector(`.film-details__control-label--watched`)
+    .addEventListener(`click`, handler);
+  }
+
+  setFavoriteButtonClickHandler(handler) {
+    this.getElement().querySelector(`.film-details__control-label--favorite`)
+    .addEventListener(`click`, handler);
   }
 }

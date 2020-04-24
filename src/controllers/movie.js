@@ -1,17 +1,20 @@
-import {render, RenderPosition} from "../utils/render";
+import {render, replace, RenderPosition} from "../utils/render";
 import FilmCardComponent from "../components/film-content/film-card";
 import FilmDetailsComponent from "../components/film-detail/film-details";
 
 export default class MovieController {
-  constructor(container) {
+  constructor(container, onDataChange) {
     this._container = container;
 
     this._filmCardComponent = null;
     this._filmDetailsComponent = null;
     this._onFilmEscClose = this._onFilmEscClose.bind(this);
+    this._onDataChange = onDataChange;
   }
 
   render(film) {
+    const oldFilmComponent = this._filmCardComponent;
+    const oldFilmDetailsComponent = this._filmDetailsComponent;
     this._filmCardComponent = new FilmCardComponent(film);
     this._filmDetailsComponent = new FilmDetailsComponent(film);
 
@@ -23,8 +26,67 @@ export default class MovieController {
       }
     });
 
+    this._filmCardComponent.setWatchedButtonClickHandler((evt) => {
+      evt.preventDefault();
+      this._onDataChange(this, film, Object.assign({}, film, {
+        controls: Object.assign({}, film.controls, {
+          isWatched: !film.controls.isWatched,
+        })
+      }));
+    });
 
-    render(this._container, this._filmCardComponent, RenderPosition.BEFOREEND);
+    this._filmCardComponent.setWatchlistButtonClickHandler((evt) => {
+      evt.preventDefault();
+      this._onDataChange(this, film, Object.assign({}, film, {
+        controls: Object.assign({}, film.controls, {
+          isWatchlist: !film.controls.isWatchlist,
+        })
+      }));
+    });
+
+    this._filmDetailsComponent.setFavoriteButtonClickHandler(() => {
+      this._onDataChange(this, film, Object.assign({}, film, {
+        controls: Object.assign({}, film.controls, {
+          isFavorite: !film.controls.isFavorite,
+        })
+      }));
+    });
+
+    this._filmDetailsComponent.setWatchedButtonClickHandler((evt) => {
+      evt.preventDefault();
+      this._onDataChange(this, film, Object.assign({}, film, {
+        controls: Object.assign({}, film.controls, {
+          isWatched: !film.controls.isWatched,
+        })
+      }));
+    });
+
+    this._filmDetailsComponent.setWatchlistButtonClickHandler((evt) => {
+      evt.preventDefault();
+      this._onDataChange(this, film, Object.assign({}, film, {
+        controls: Object.assign({}, film.controls, {
+          isWatchlist: !film.controls.isWatchlist,
+        })
+      }));
+    });
+
+    this._filmCardComponent.setFavoriteButtonClickHandler((evt) => {
+      evt.preventDefault();
+      this._onDataChange(this, film, Object.assign({}, film, {
+        controls: Object.assign({}, film.controls, {
+          isFavorite: !film.controls.isFavorite,
+        })
+      }));
+    });
+
+    if (oldFilmComponent && oldFilmDetailsComponent) {
+      replace(this._filmCardComponent, oldFilmComponent);
+      replace(this._filmDetailsComponent, oldFilmDetailsComponent);
+    } else {
+      render(this._container, this._filmCardComponent, RenderPosition.BEFOREEND);
+    }
+
+
   }
 
 
@@ -55,4 +117,5 @@ export default class MovieController {
       this._onFilmDetailCloseClick();
     }
   }
+
 }
