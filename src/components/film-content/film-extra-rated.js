@@ -1,18 +1,11 @@
-import {createElement, createElements, render, RenderPosition} from "../../utils/render";
+import {createElement} from "../../utils/render";
 import {conditionalTemplate} from "../../utils/common";
-import {FILM_EXTRA_COUNT} from "../../const";
-import FilmCardComponent from "./film-card";
 import AbstractComponent from "../abstract-component";
 
 export default class FilmTopRatedComponent extends AbstractComponent {
   constructor(films) {
     super();
-
-    this._films = films.slice()
-    .sort((a, b) => b.rating - a.rating);
-    this._ratedFilmsData = this._films
-    .slice(0, FILM_EXTRA_COUNT);
-
+    this._films = films;
   }
 
   _isRatedFilmsShow(ratedFilmsBlockMarkup) {
@@ -33,8 +26,6 @@ export default class FilmTopRatedComponent extends AbstractComponent {
   getElement() {
     if (!this._element) {
       this._element = createElement(this.getTemplate());
-      const filmCards = createElements(this._ratedFilmsData, FilmCardComponent);
-      render(this._element.querySelector(`.films-list__container`), filmCards, RenderPosition.BEFOREEND);
     }
 
     return this._element;

@@ -26,32 +26,8 @@ export default class FilmDetailsComponent extends AbstractComponent {
     this._genre = genre;
     this._description = description;
     this._comments = comments;
-
-    this.onFilmEscClose = this.onFilmEscClose.bind(this);
   }
 
-  onFilmDetailCloseClick() {
-    this.getElement().remove();
-    document.removeEventListener(`keydown`, this.onFilmEscClose);
-  }
-
-  onFilmEscClose(evt) {
-    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
-    if (isEscKey) {
-      this.onFilmDetailCloseClick();
-    }
-  }
-
-  onFilmDetailClose() {
-    // При нажатии на кнопку, удаляется.
-    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, () => {
-      this.onFilmDetailCloseClick();
-    });
-
-
-    // И на Esc
-    document.addEventListener(`keydown`, this.onFilmEscClose);
-  }
 
   getTemplate() {
     const formatedDate = formatDate(this._date);
@@ -183,7 +159,6 @@ export default class FilmDetailsComponent extends AbstractComponent {
   getElement() {
     if (!this._element) {
       this._element = createElement(this.getTemplate());
-      this.onFilmDetailClose();
     }
     return this._element;
   }
