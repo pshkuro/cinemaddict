@@ -2,10 +2,10 @@ import {formatDate} from "../../utils/date";
 import {createElement} from "../../utils/render";
 import FilmsCommentsComponent from "./film-detail-comments";
 import FilmsGenresComponent from "./film-detail-ganre";
-import AbstractComponent from "../abstract-component";
+import AbstractSmartComponent from "../abstract-smart-component";
 
 // Генерация блока FilmsDetails
-export default class FilmDetailsComponent extends AbstractComponent {
+export default class FilmDetailsComponent extends AbstractSmartComponent {
   constructor(film) {
     super();
     const {poster, wrap, rating, info, description, controls, comments} = film;
@@ -30,6 +30,14 @@ export default class FilmDetailsComponent extends AbstractComponent {
     this._isWatched = isWatched;
     this._isFavorite = isFavorite;
     this._comments = comments;
+    this._commentEmoji = null;
+
+    this._watchlistHandler = null;
+    this._watchedHandler = null;
+    this._favoriteHandler = null;
+    this._handler = null;
+    this._element = this.getElement();
+    this._setCommentsEmoji();
   }
 
   _isButtonActive(isActive) {
@@ -42,6 +50,9 @@ export default class FilmDetailsComponent extends AbstractComponent {
     const filmGenreMarkup = this._genre.map((genreItem) => new FilmsGenresComponent(genreItem).getTemplate()).join(`\n`);
     const filmCommentsMarkup = this._comments.map((comment) =>
       new FilmsCommentsComponent(comment.emoji, comment.text, comment.author, comment.date).getTemplate()).join(`\n`);
+    const commentEmojiMarkup = this._commentEmoji
+      ? `<img src="./images/emoji/${this._commentEmoji}.png" width=55" height="55" alt="emoji">`
+      : ``;
 
     return (
       `<section class="film-details">
@@ -129,7 +140,9 @@ export default class FilmDetailsComponent extends AbstractComponent {
         </ul>
   
         <div class="film-details__new-comment">
-          <div for="add-emoji" class="film-details__add-emoji-label"></div>
+          <div for="add-emoji" class="film-details__add-emoji-label">
+            ${commentEmojiMarkup}
+          </div>
   
           <label class="film-details__comment-label">
             <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
@@ -171,18 +184,62 @@ export default class FilmDetailsComponent extends AbstractComponent {
     return this._element;
   }
 
+  rerender() {
+    super.rerender();
+  }
+
+  recoveryListeners() {
+    this.setWatchlistButtonClickHandler(this._watchlistHandler);
+    this.setWatchedButtonClickHandler(this._watchedHandler);
+    this.setFavoriteButtonClickHandler(this._favoriteHandler);
+    this._setCommentsEmoji();
+    this.setEscCloseButtonHanler(this._handler);
+  }
+
   setWatchlistButtonClickHandler(handler) {
-    this.getElement().querySelector(`.film-details__control-label--watchlist`)
+    this._element.querySelector(`.film-details__control-label--watchlist`)
     .addEventListener(`click`, handler);
+
+    this._watchlistHandler = handler;
   }
 
   setWatchedButtonClickHandler(handler) {
-    this.getElement().querySelector(`.film-details__control-label--watched`)
+    this._element.querySelector(`.film-details__control-label--watched`)
     .addEventListener(`click`, handler);
+
+    this._watchedHandler = handler;
   }
 
   setFavoriteButtonClickHandler(handler) {
-    this.getElement().querySelector(`.film-details__control-label--favorite`)
+    this._element.querySelector(`.film-details__control-label--favorite`)
     .addEventListener(`click`, handler);
+
+    this._favoriteHandler = handler;
   }
+
+  setEscCloseButtonHanler(handler) {
+    this._element.querySelector(`.film-details__close-btn`)
+    .addEventListener(`click`, handler);
+
+    this._handler = handler;
+  }
+
+  _setCommentsEmoji() {
+    const emojiList = this._element.querySelector(`.film-details__emoji-list`);
+
+    emojiList.addEventListener(`click`, (evt) => {
+      const emojiLabelElement = evt.target.closest(`.film-details__emoji-label`);
+
+      if (emojiLabelElement) {
+        const emojiControlElement = emojiLabelElement.control;
+        const emoji = emojiControlElement.value;
+
+        this._commentEmoji = emoji;
+
+        this.rerender();
+      }
+    });
+  }
+
+
 }

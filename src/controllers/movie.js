@@ -2,14 +2,21 @@ import {render, replace, RenderPosition} from "../utils/render";
 import FilmCardComponent from "../components/film-content/film-card";
 import FilmDetailsComponent from "../components/film-detail/film-details";
 
-export default class MovieController {
-  constructor(container, onDataChange) {
+const State = {
+  DEFAULT: `default`,
+  DETAILS: `details`
+};
+
+export default class FilmController {
+  constructor(container, onDataChange, onViewChange) {
     this._container = container;
 
     this._filmCardComponent = null;
     this._filmDetailsComponent = null;
     this._onFilmEscClose = this._onFilmEscClose.bind(this);
     this._onDataChange = onDataChange;
+    this._onViewChange = onViewChange;
+    this._state = State.DEFAULT;
   }
 
   render(film) {
@@ -20,6 +27,7 @@ export default class MovieController {
 
 
     this._filmCardComponent.setOpenPopapHandler((evt) => {
+      this._onViewChange();
       const popupTarget = evt.target.closest(`.film-card__poster, .film-card__title, .film-card__comments`);
       if (popupTarget) {
         this._openFilmDetailPopap();
@@ -82,26 +90,27 @@ export default class MovieController {
     if (oldFilmComponent && oldFilmDetailsComponent) {
       replace(this._filmCardComponent, oldFilmComponent);
       replace(this._filmDetailsComponent, oldFilmDetailsComponent);
+      this._openFilmDetailPopap();
     } else {
       render(this._container, this._filmCardComponent, RenderPosition.BEFOREEND);
     }
-
-
   }
 
+  setDefaultView() {
+    if (this._state !== State.DEFAULT) {
+      this._onFilmDetailCloseClick();
+    }
+  }
 
+  // Открываем карточку
   _openFilmDetailPopap() {
     document.body.appendChild(this._filmDetailsComponent.getElement());
-    const popapCloseButton = this._filmDetailsComponent.getElement().querySelector(`.film-details__close-btn`);
     const onFilmDetailCloseClick = this._onFilmDetailCloseClick.bind(this);
-
+    this._state = State.DETAILS;
     // При нажатии на кнопку, удаляется.
-    popapCloseButton.addEventListener(`click`,
-        function closeFilmPopap() {
-          onFilmDetailCloseClick();
-          popapCloseButton.removeEventListener(`click`, closeFilmPopap);
-        });
-
+    this._filmDetailsComponent.setEscCloseButtonHanler(function closeFilmPopap() {
+      onFilmDetailCloseClick();
+    });
     // И на Esc
     document.addEventListener(`keydown`, this._onFilmEscClose);
   }
