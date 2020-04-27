@@ -1,5 +1,4 @@
 import AbstractComponent from "../abstract-component";
-import FilmDetailsComponent from "../film-detail/film-details";
 import {createElement} from "../../utils/render";
 
 // Генерация карточки фильма
@@ -24,21 +23,6 @@ export default class FilmCardComponent extends AbstractComponent {
     this._isWatched = isWatched;
     this._isFavorite = isFavorite;
 
-  }
-
-
-  onFilmDetailClick() {
-    const filmDetailsComponent = new FilmDetailsComponent(this._film);
-    document.body.appendChild(filmDetailsComponent.getElement());
-  }
-
-  attachPopapOpenHadler() {
-    this.getElement().addEventListener(`click`, (evt) => {
-      const popupTarget = evt.target.closest(`.film-card__poster, .film-card__title, .film-card__comments`);
-      if (popupTarget) {
-        this.onFilmDetailClick();
-      }
-    });
   }
 
   _isButtonActive(isActive) {
@@ -73,9 +57,27 @@ export default class FilmCardComponent extends AbstractComponent {
   getElement() {
     if (!this._element) {
       this._element = createElement(this.getTemplate());
-      this.attachPopapOpenHadler();
     }
     return this._element;
+  }
+
+  setOpenPopapHandler(handler) {
+    this.getElement().addEventListener(`click`, handler);
+  }
+
+  setWatchlistButtonClickHandler(handler) {
+    this.getElement().querySelector(`.film-card__controls-item--add-to-watchlist`)
+    .addEventListener(`click`, handler);
+  }
+
+  setWatchedButtonClickHandler(handler) {
+    this.getElement().querySelector(`.film-card__controls-item--mark-as-watched`)
+    .addEventListener(`click`, handler);
+  }
+
+  setFavoriteButtonClickHandler(handler) {
+    this.getElement().querySelector(`.film-card__controls-item--favorite`)
+    .addEventListener(`click`, handler);
   }
 
 }

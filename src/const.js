@@ -1,5 +1,4 @@
 export const FILTER_NAMES = [`All Movies`, `Watchlist`, `History`, `Favorites`];
-export const FILM_EXTRA_COUNT = 2;
 
 export const FILMS_NAMES = [`Her Smell`, `Portrait of a Lady on Fire`, `Under the Silver Lake`, `Hagazussa`,
   `Uncut Gems`, `Little Women`, `A Hidden Life`, `Transit`];

@@ -4,7 +4,8 @@ import {activateElement} from "../../utils/interactivity";
 export const SortType = {
   DEFAULT: `default`,
   DATE: `date`,
-  RATING: `rating`
+  RATING: `rating`,
+  COMMENTED: `commented`
 };
 
 // Генерерация Сортировки

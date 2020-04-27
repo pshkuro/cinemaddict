@@ -2,15 +2,16 @@ import {formatDate} from "../../utils/date";
 import {createElement} from "../../utils/render";
 import FilmsCommentsComponent from "./film-detail-comments";
 import FilmsGenresComponent from "./film-detail-ganre";
-import AbstractComponent from "../abstract-component";
+import AbstractSmartComponent from "../abstract-smart-component";
 
 // Генерация блока FilmsDetails
-export default class FilmDetailsComponent extends AbstractComponent {
+export default class FilmDetailsComponent extends AbstractSmartComponent {
   constructor(film) {
     super();
-    const {poster, wrap, rating, info, description, comments} = film;
+    const {poster, wrap, rating, info, description, controls, comments} = film;
     const {title, original} = wrap;
     const {director, writers, actors, date, duration, country, genre} = info;
+    const {isWatchlist, isWatched, isFavorite} = controls;
 
     this._poster = poster;
     this._original = original;
@@ -25,39 +26,33 @@ export default class FilmDetailsComponent extends AbstractComponent {
     this._country = country;
     this._genre = genre;
     this._description = description;
+    this._isWatchlist = isWatchlist;
+    this._isWatched = isWatched;
+    this._isFavorite = isFavorite;
     this._comments = comments;
+    this._commentEmoji = null;
 
-    this.onFilmEscClose = this.onFilmEscClose.bind(this);
+    this._watchlistHandler = null;
+    this._watchedHandler = null;
+    this._favoriteHandler = null;
+    this._handler = null;
+    this._element = this.getElement();
+    this._setCommentsEmoji();
   }
 
-  onFilmDetailCloseClick() {
-    this.getElement().remove();
-    document.removeEventListener(`keydown`, this.onFilmEscClose);
+  _isButtonActive(isActive) {
+    return isActive ? `checked` : ``;
   }
 
-  onFilmEscClose(evt) {
-    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
-    if (isEscKey) {
-      this.onFilmDetailCloseClick();
-    }
-  }
-
-  onFilmDetailClose() {
-    // При нажатии на кнопку, удаляется.
-    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, () => {
-      this.onFilmDetailCloseClick();
-    });
-
-
-    // И на Esc
-    document.addEventListener(`keydown`, this.onFilmEscClose);
-  }
 
   getTemplate() {
     const formatedDate = formatDate(this._date);
     const filmGenreMarkup = this._genre.map((genreItem) => new FilmsGenresComponent(genreItem).getTemplate()).join(`\n`);
     const filmCommentsMarkup = this._comments.map((comment) =>
       new FilmsCommentsComponent(comment.emoji, comment.text, comment.author, comment.date).getTemplate()).join(`\n`);
+    const commentEmojiMarkup = this._commentEmoji
+      ? `<img src="./images/emoji/${this._commentEmoji}.png" width=55" height="55" alt="emoji">`
+      : ``;
 
     return (
       `<section class="film-details">
@@ -124,13 +119,13 @@ export default class FilmDetailsComponent extends AbstractComponent {
           </div>
     
           <section class="film-details__controls">
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist">
-            <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
+            <input type="checkbox" class="film-details__control-input visually-hidden" ${this._isButtonActive(this._isWatchlist)} id="watchlist" name="watchlist">
+            <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist ">Add to watchlist</label>
     
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched">
+            <input type="checkbox" class="film-details__control-input visually-hidden" ${this._isButtonActive(this._isWatched)} id="watched" name="watched">
             <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
     
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite">
+            <input type="checkbox" class="film-details__control-input visually-hidden" ${this._isButtonActive(this._isFavorite)} id="favorite" name="favorite">
             <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
           </section>
         </div>
@@ -145,7 +140,9 @@ export default class FilmDetailsComponent extends AbstractComponent {
         </ul>
   
         <div class="film-details__new-comment">
-          <div for="add-emoji" class="film-details__add-emoji-label"></div>
+          <div for="add-emoji" class="film-details__add-emoji-label">
+            ${commentEmojiMarkup}
+          </div>
   
           <label class="film-details__comment-label">
             <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
@@ -183,8 +180,66 @@ export default class FilmDetailsComponent extends AbstractComponent {
   getElement() {
     if (!this._element) {
       this._element = createElement(this.getTemplate());
-      this.onFilmDetailClose();
     }
     return this._element;
   }
+
+  rerender() {
+    super.rerender();
+  }
+
+  recoveryListeners() {
+    this.setWatchlistButtonClickHandler(this._watchlistHandler);
+    this.setWatchedButtonClickHandler(this._watchedHandler);
+    this.setFavoriteButtonClickHandler(this._favoriteHandler);
+    this._setCommentsEmoji();
+    this.setEscCloseButtonHanler(this._handler);
+  }
+
+  setWatchlistButtonClickHandler(handler) {
+    this._element.querySelector(`.film-details__control-label--watchlist`)
+    .addEventListener(`click`, handler);
+
+    this._watchlistHandler = handler;
+  }
+
+  setWatchedButtonClickHandler(handler) {
+    this._element.querySelector(`.film-details__control-label--watched`)
+    .addEventListener(`click`, handler);
+
+    this._watchedHandler = handler;
+  }
+
+  setFavoriteButtonClickHandler(handler) {
+    this._element.querySelector(`.film-details__control-label--favorite`)
+    .addEventListener(`click`, handler);
+
+    this._favoriteHandler = handler;
+  }
+
+  setEscCloseButtonHanler(handler) {
+    this._element.querySelector(`.film-details__close-btn`)
+    .addEventListener(`click`, handler);
+
+    this._handler = handler;
+  }
+
+  _setCommentsEmoji() {
+    const emojiList = this._element.querySelector(`.film-details__emoji-list`);
+
+    emojiList.addEventListener(`click`, (evt) => {
+      const emojiLabelElement = evt.target.closest(`.film-details__emoji-label`);
+
+      if (emojiLabelElement) {
+        const emojiControlElement = emojiLabelElement.control;
+        const emoji = emojiControlElement.value;
+
+        this._commentEmoji = emoji;
+
+        this.rerender();
+      }
+    });
+  }
+
+
 }
