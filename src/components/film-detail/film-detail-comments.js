@@ -1,4 +1,4 @@
-import {formatNumberDate} from "../../utils/date";
+import {formatCommentsDate} from "../../utils/date";
 import AbstractComponent from "../abstract-component";
 
 // Генерация 1 комментария
@@ -21,7 +21,7 @@ export default class FilmsCommentsComponent extends AbstractComponent {
     <p class="film-details__comment-text">${this._text}</p>
     <p class="film-details__comment-info">
       <span class="film-details__comment-author">${this._author}</span>
-      <span class="film-details__comment-day">${formatNumberDate(this._date)}</span>
+      <span class="film-details__comment-day">${formatCommentsDate(this._date)}</span>
       <button class="film-details__comment-delete">Delete</button>
     </p>
   </div>
