@@ -1,5 +1,6 @@
 import AbstractComponent from "../abstract-component";
 import {createElement} from "../../utils/render";
+import {formatTime} from "../../utils/date";
 
 // Генерация карточки фильма
 export default class FilmCardComponent extends AbstractComponent {
@@ -31,6 +32,7 @@ export default class FilmCardComponent extends AbstractComponent {
 
   getTemplate() {
     const releaseDate = this._date.getFullYear();
+    const formatedDuaration = formatTime(this._duration);
     const filmCardGenre = this._genre[0];
     const commentsCount = this._comments.length;
     return (
@@ -39,7 +41,7 @@ export default class FilmCardComponent extends AbstractComponent {
       <p class="film-card__rating">${this._rating}</p>
       <p class="film-card__info">
         <span class="film-card__year">${releaseDate}</span>
-        <span class="film-card__duration">${this._duration}</span>
+        <span class="film-card__duration">${formatedDuaration}</span>
         <span class="film-card__genre">${filmCardGenre}</span>
       </p>
       <img src="./images/posters/${this._poster}" alt="" class="film-card__poster">

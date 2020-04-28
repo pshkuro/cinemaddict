@@ -2,7 +2,7 @@ import {FILMS_POSTERS, FILMS_NAMES, FILMS_DESCRIPTION, FILM_DIRECTORS, FILM_WRIT
   FILM_COUNTRY, FILM_GENRE, FILM_COMMENTS_EMOJI} from "../const";
 import {getRandomArrayItem, getRandomCountRandomArrayItem, getRandomIntegerRoundingNumber,
   getRandomIntegerNumber} from "../utils/common";
-import {formatTime, getRandomDate} from "../utils/date";
+import {getRandomDate} from "../utils/date";
 
 const FILM_DURATION_WORDS_COUNT = `5`;
 
@@ -12,7 +12,7 @@ const generateComment = () => {
     text: getRandomArrayItem(FILMS_DESCRIPTION),
     emoji: getRandomArrayItem(FILM_COMMENTS_EMOJI),
     author: getRandomArrayItem(FILM_WRITERS),
-    date: getRandomDate(new Date(2019, 0, 1), new Date()),
+    date: getRandomDate(new Date(2020, 0, 26), new Date()),
   };
 };
 
@@ -40,9 +40,7 @@ const generateCard = () => {
       writers: getRandomCountRandomArrayItem(FILM_WRITERS),
       actors: getRandomCountRandomArrayItem(FILM_ACTORS),
       date: getRandomDate(new Date(2012, 0, 1), new Date()),
-      get duration() {
-        return formatTime(this.date);
-      },
+      duration: getRandomIntegerNumber(50, 400),
       country: getRandomArrayItem(FILM_COUNTRY),
       genre: getRandomCountRandomArrayItem(FILM_GENRE),
     },

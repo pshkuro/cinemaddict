@@ -1,4 +1,4 @@
-import {formatDate} from "../../utils/date";
+import {formatDate, formatTime} from "../../utils/date";
 import {createElement} from "../../utils/render";
 import FilmsCommentsComponent from "./film-detail-comments";
 import FilmsGenresComponent from "./film-detail-ganre";
@@ -53,6 +53,7 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
     const commentEmojiMarkup = this._commentEmoji
       ? `<img src="./images/emoji/${this._commentEmoji}.png" width=55" height="55" alt="emoji">`
       : ``;
+    const formatedDuration = formatTime(this._duration);
 
     return (
       `<section class="film-details">
@@ -99,7 +100,7 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Runtime</td>
-                  <td class="film-details__cell">${this._duration}</td>
+                  <td class="film-details__cell">${formatedDuration}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Country</td>
