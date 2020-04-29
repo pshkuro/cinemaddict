@@ -1,3 +1,10 @@
+export const FilterType = {
+  ALL: `All Movies`,
+  WATCHLIST: `Watchlist`,
+  HISTORY: `History`,
+  FAVORITES: `Favorites`,
+};
+
 export const FILTER_NAMES = [`All Movies`, `Watchlist`, `History`, `Favorites`];
 
 export const FILMS_NAMES = [`Her Smell`, `Portrait of a Lady on Fire`, `Under the Silver Lake`, `Hagazussa`,

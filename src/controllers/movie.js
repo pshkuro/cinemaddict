@@ -1,4 +1,4 @@
-import {render, replace, RenderPosition} from "../utils/render";
+import {render, replace, remove, RenderPosition} from "../utils/render";
 import FilmCardComponent from "../components/film-content/film-card";
 import FilmDetailsComponent from "../components/film-detail/film-details";
 
@@ -100,6 +100,12 @@ export default class FilmController {
     if (this._state !== State.DEFAULT) {
       this._onFilmDetailCloseClick();
     }
+  }
+
+  destroy() {
+    remove(this._filmDetailsComponent);
+    remove(this._filmCardComponent);
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
   }
 
   // Открываем карточку
