@@ -27,6 +27,7 @@ const generateCommentList = () => {
 const generateCard = () => {
 
   return {
+    id: String(new Date() + Math.random()),
     poster: getRandomArrayItem(FILMS_POSTERS),
     wrap: {
       title: getRandomArrayItem(FILMS_NAMES),
