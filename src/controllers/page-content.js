@@ -5,7 +5,7 @@ import ShowMoreButtonComponent from "../components/film-content/show-more-button
 import FilmTopRatedComponent from "../components/film-content/film-extra-rated";
 import FilmMostCommentedComponent from "../components/film-content/film-extra-commented";
 import {render, RenderPosition, remove} from "../utils/render";
-import FilmController from "./movie";
+import FilmController, {State as FilmControllerState} from "./movie";
 
 
 const SHOWING_CARDS_COUNT_BY_BUTTON = 5;
@@ -15,7 +15,7 @@ const FILM_EXTRA_COUNT = 2;
 const renderFilms = (container, films, onDataChange, onViewChange) => {
   return films.map((film) => {
     const filmController = new FilmController(container, onDataChange, onViewChange);
-    filmController.render(film);
+    filmController.render(film, FilmControllerState.DEFAULT);
 
     return filmController;
   });
@@ -181,11 +181,11 @@ export default class PageController {
     this._updateFilms(SHOWING_CARDS_COUNT_ON_START);
   }
 
-  _onDataChange(filmController, oldFilm, newFilm) {
-    const isSuccess = this._filmsModel.updateFilms(oldFilm.id, newFilm);
+  _onDataChange(filmController, oldData, newData) {
+    const isSuccess = this._filmsModel.updateFilms(oldData.id, newData);
 
     if (isSuccess) {
-      filmController.render(newFilm);
+      filmController.render(newData);
     }
   }
 

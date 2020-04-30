@@ -13,6 +13,7 @@ const generateComment = () => {
     emoji: getRandomArrayItem(FILM_COMMENTS_EMOJI),
     author: getRandomArrayItem(FILM_WRITERS),
     date: getRandomDate(new Date(2020, 0, 26), new Date()),
+    id: String(new Date() + Math.random()),
   };
 };
 

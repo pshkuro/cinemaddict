@@ -3,17 +3,18 @@ import AbstractComponent from "../abstract-component";
 
 // Генерация 1 комментария
 export default class FilmsCommentsComponent extends AbstractComponent {
-  constructor(emoji, text, author, date) {
+  constructor(emoji, text, author, date, id) {
     super();
 
     this._emoji = emoji;
     this._text = text;
     this._author = author;
     this._date = date;
+    this._id = id;
   }
 
   getTemplate() {
-    return (`<li class="film-details__comment">
+    return (`<li class="film-details__comment" id="${this._id}">
   <span class="film-details__comment-emoji">
     <img src="${this._emoji}" width="55" height="55" alt="emoji-smile">
   </span>

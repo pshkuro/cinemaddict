@@ -36,6 +36,8 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
     this._watchedHandler = null;
     this._favoriteHandler = null;
     this._handler = null;
+    this._deleteButtonClickHandler = null;
+    this._setCommentHandler = null;
     this._element = this.getElement();
     this._setCommentsEmoji();
   }
@@ -49,7 +51,7 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
     const formatedDate = formatDate(this._date);
     const filmGenreMarkup = this._genre.map((genreItem) => new FilmsGenresComponent(genreItem).getTemplate()).join(`\n`);
     const filmCommentsMarkup = this._comments.map((comment) =>
-      new FilmsCommentsComponent(comment.emoji, comment.text, comment.author, comment.date).getTemplate()).join(`\n`);
+      new FilmsCommentsComponent(comment.emoji, comment.text, comment.author, comment.date, comment.id).getTemplate()).join(`\n`);
     const commentEmojiMarkup = this._commentEmoji
       ? `<img src="./images/emoji/${this._commentEmoji}.png" width=55" height="55" alt="emoji">`
       : ``;
@@ -195,6 +197,31 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
     this.setFavoriteButtonClickHandler(this._favoriteHandler);
     this._setCommentsEmoji();
     this.setEscCloseButtonHanler(this._handler);
+    this.setDeleteButtonClickHandler(this._deleteButtonClickHandler);
+    this.setSendCommentHandler(this._setCommentHandler);
+  }
+
+  // getData() {
+  //   const form = this.getElement().querySelector(`.film-details__inner`);
+  //   const formData = new FormData(form);
+  //   return parseFormData(formData);
+  // }
+
+  setDeleteButtonClickHandler(handler) {
+    const deleteCommentButton = this._element.querySelector(`.film-details__comment-delete`);
+    if (deleteCommentButton) {
+      deleteCommentButton
+    .addEventListener(`click`, handler);
+    }
+
+    this._deleteButtonClickHandler = handler;
+
+  }
+
+  setSendCommentHandler(handler) {
+    const textComment = this._element.querySelector(`.film-details__comment-input`);
+    textComment.addEventListener(`keydown`, handler);
+    this._setCommentHandler = handler;
   }
 
   setWatchlistButtonClickHandler(handler) {
@@ -225,6 +252,30 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
     this._handler = handler;
   }
 
+  gatherComment() {
+    const textComment = this._element.querySelector(`.film-details__comment-input`);
+    const emojiElement = this._element.querySelector(`.film-details__add-emoji-label`).firstElementChild;
+
+    const text = textComment.value;
+    const emoji = emojiElement ? emojiElement.src : ``;
+
+    if (!emoji || !text) {
+      return null;
+    }
+
+    const date = new Date();
+    const id = Math.random();
+    const author = `user`;
+
+    return {
+      text,
+      emoji,
+      date,
+      id,
+      author
+    };
+  }
+
   _setCommentsEmoji() {
     const emojiList = this._element.querySelector(`.film-details__emoji-list`);
 
@@ -241,6 +292,4 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
       }
     });
   }
-
-
 }
