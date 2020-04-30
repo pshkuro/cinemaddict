@@ -17,7 +17,9 @@ export default class FiltersMarkupComponent extends AbstractComponent {
     const navigationActiveClass = this._isActive ? ` main-navigation__item--active` : ``;
 
     return (`
-    <a href="#${this._name.toLowerCase()}" class="main-navigation__item${navigationActiveClass}">
+    <a href="#${this._name.toLowerCase()}"
+    id="filter__${this._name}"
+    class="main-navigation__item${navigationActiveClass}">
     ${this._name } ${(this._isActive || this._count > ITEM_COUNT_SHOW_NUMBER) ? `` :
         `<span class="main-navigation__item-count">${this._count}</span>`}</a>`
     );

@@ -1,5 +1,6 @@
 import AbstractComponent from "../abstract-component";
 import FiltersMarkupComponent from "./filter-markup-template";
+import {activateElement} from "../../utils/interactivity";
 
 const FILTER_ID_PREFIX = `filter__`;
 
@@ -35,6 +36,8 @@ export default class FiltersComponent extends AbstractComponent {
     this.getElement().addEventListener(`click`, (evt) => {
       const filterName = getFilterNameById(evt.target.id);
       handler(filterName);
+
+      activateElement(evt.target, this.getElement(), `main-navigation__item--active`);
     });
   }
 }
