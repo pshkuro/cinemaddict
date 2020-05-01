@@ -30,7 +30,7 @@ render(mainPageElement, filmsContentComponent, RenderPosition.BEFOREEND);
 
 // Отрисовка логики внутри этого блока
 const filmContentController = new PageController(filmsContentComponent, filmsModel); // передаем контейнер, внутри которого все это происходит
-filmContentController.render(); // Передаем данные для отрисовки логики
+filmContentController.render();
 
 
 // Рендерим количество фильмов в футер
