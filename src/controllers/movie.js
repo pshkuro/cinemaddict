@@ -1,11 +1,12 @@
-import {render, replace, RenderPosition} from "../utils/render";
+import {render, replace, remove, RenderPosition} from "../utils/render";
 import FilmCardComponent from "../components/film-content/film-card";
 import FilmDetailsComponent from "../components/film-detail/film-details";
 
-const State = {
+export const State = {
   DEFAULT: `default`,
   DETAILS: `details`
 };
+
 
 export default class FilmController {
   constructor(container, onDataChange, onViewChange) {
@@ -19,13 +20,15 @@ export default class FilmController {
     this._state = State.DEFAULT;
   }
 
-  render(film) {
+  render(film, state) {
+    this._state = state;
     const oldFilmComponent = this._filmCardComponent;
     const oldFilmDetailsComponent = this._filmDetailsComponent;
     this._filmCardComponent = new FilmCardComponent(film);
     this._filmDetailsComponent = new FilmDetailsComponent(film);
 
 
+    // Открытие попапа
     this._filmCardComponent.setOpenPopapHandler((evt) => {
       this._onViewChange();
       const popupTarget = evt.target.closest(`.film-card__poster, .film-card__title, .film-card__comments`);
@@ -34,6 +37,7 @@ export default class FilmController {
       }
     });
 
+    // Работа с добавлением в списки - Карточка
     this._filmCardComponent.setWatchedButtonClickHandler((evt) => {
       evt.preventDefault();
       this._onDataChange(this, film, Object.assign({}, film, {
@@ -60,6 +64,7 @@ export default class FilmController {
       }));
     });
 
+    // Работа с добавлением в спики - Попап
     this._filmDetailsComponent.setWatchedButtonClickHandler((evt) => {
       evt.preventDefault();
       this._onDataChange(this, film, Object.assign({}, film, {
@@ -87,6 +92,33 @@ export default class FilmController {
       }));
     });
 
+    // Удаление комментария
+    this._filmDetailsComponent.setDeleteButtonClickHandler((evt) => {
+
+      evt.preventDefault();
+
+      const deleteButton = evt.target;
+      const commentItem = deleteButton.closest(`.film-details__comment`);
+      const removeCommentId = commentItem.id;
+      const comments = film.comments.filter((comment) => comment.id !== removeCommentId);
+
+      this._onDataChange(this, film, Object.assign(film, {comments}));
+    });
+
+    // Добавление комментария
+    this._filmDetailsComponent.setSendCommentHandler((evt) => {
+      const isCtrlAndEnter = evt.code === `Enter` && (evt.ctrlKey || evt.metaKey);
+      if (isCtrlAndEnter) {
+        const comment = this._filmDetailsComponent.gatherComment();
+        if (!comment) {
+          return;
+        }
+        const newComments = film.comments.concat(comment);
+        this._onDataChange(this, film, Object.assign(film, {comments: newComments}));
+      }
+    });
+
+    // Рендер фильмов
     if (oldFilmComponent && oldFilmDetailsComponent) {
       replace(this._filmCardComponent, oldFilmComponent);
       replace(this._filmDetailsComponent, oldFilmDetailsComponent);
@@ -100,6 +132,12 @@ export default class FilmController {
     if (this._state !== State.DEFAULT) {
       this._onFilmDetailCloseClick();
     }
+  }
+
+  destroy() {
+    remove(this._filmDetailsComponent);
+    remove(this._filmCardComponent);
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
   }
 
   // Открываем карточку
@@ -116,6 +154,7 @@ export default class FilmController {
   }
 
   _onFilmDetailCloseClick() {
+    this._filmDetailsComponent.resetAddCommentForm();
     this._filmDetailsComponent.getElement().remove();
     document.removeEventListener(`keydown`, this._onFilmEscClose);
   }

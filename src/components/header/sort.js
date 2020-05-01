@@ -1,4 +1,4 @@
-import AbstractComponent from "../abstract-component";
+import AbstractSmartComponent from "../abstract-smart-component";
 import {activateElement} from "../../utils/interactivity";
 
 export const SortType = {
@@ -9,11 +9,12 @@ export const SortType = {
 };
 
 // Генерерация Сортировки
-export default class SortComponent extends AbstractComponent {
+export default class SortComponent extends AbstractSmartComponent {
   constructor() {
     super();
 
     this._currentSortType = SortType.DEFAULT;
+    this._sortTypeChangeHandler = null;
   }
 
   getTemplate() {
@@ -28,6 +29,20 @@ export default class SortComponent extends AbstractComponent {
 
   getSortType() {
     return this._currentSortType;
+  }
+
+  recoveryListeners() {
+    this.setSortTypeHandler(this._sortTypeChangeHandler);
+  }
+
+  rerender() {
+    super.rerender();
+  }
+
+  // Сбрасывает значение фильтра на дефолтное
+  reset() {
+    this._currentSortType = SortType.DEFAULT;
+    this.rerender();
   }
 
   setSortTypeHandler(handler) {
@@ -55,5 +70,7 @@ export default class SortComponent extends AbstractComponent {
       this._currentSortType = sortType;
       handler(this._currentSortType);
     });
+
+    this._sortTypeChangeHandler = handler;
   }
 }

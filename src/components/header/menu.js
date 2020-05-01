@@ -1,5 +1,12 @@
 import AbstractComponent from "../abstract-component";
 import FiltersMarkupComponent from "./filter-markup-template";
+import {activateElement} from "../../utils/interactivity";
+
+const FILTER_ID_PREFIX = `filter__`;
+
+const getFilterNameById = (id) => {
+  return id.substring(FILTER_ID_PREFIX.length);
+};
 
 // Генерация блока фильтров
 export default class FiltersComponent extends AbstractComponent {
@@ -10,8 +17,8 @@ export default class FiltersComponent extends AbstractComponent {
 
 
   getTemplate() {
-    const filterMarkup = this._filters.map((filter, index) =>
-      new FiltersMarkupComponent(filter, index === 0)
+    const filterMarkup = this._filters.map((filter) =>
+      new FiltersMarkupComponent(filter, filter.checked)
       .getTemplate())
       .join(`\n`);
 
@@ -23,5 +30,14 @@ export default class FiltersComponent extends AbstractComponent {
       <a href="#stats" class="main-navigation__additional">Stats</a>
     </nav>`
     );
+  }
+
+  setFilterChangeHandler(handler) {
+    this.getElement().addEventListener(`click`, (evt) => {
+      const filterName = getFilterNameById(evt.target.id);
+      handler(filterName);
+
+      activateElement(evt.target, this.getElement(), `main-navigation__item--active`);
+    });
   }
 }

@@ -36,6 +36,8 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
     this._watchedHandler = null;
     this._favoriteHandler = null;
     this._handler = null;
+    this._deleteButtonClickHandler = null;
+    this._setCommentHandler = null;
     this._element = this.getElement();
     this._setCommentsEmoji();
   }
@@ -49,7 +51,7 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
     const formatedDate = formatDate(this._date);
     const filmGenreMarkup = this._genre.map((genreItem) => new FilmsGenresComponent(genreItem).getTemplate()).join(`\n`);
     const filmCommentsMarkup = this._comments.map((comment) =>
-      new FilmsCommentsComponent(comment.emoji, comment.text, comment.author, comment.date).getTemplate()).join(`\n`);
+      new FilmsCommentsComponent(comment.emoji, comment.text, comment.author, comment.date, comment.id).getTemplate()).join(`\n`);
     const commentEmojiMarkup = this._commentEmoji
       ? `<img src="./images/emoji/${this._commentEmoji}.png" width=55" height="55" alt="emoji">`
       : ``;
@@ -195,8 +197,29 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
     this.setFavoriteButtonClickHandler(this._favoriteHandler);
     this._setCommentsEmoji();
     this.setEscCloseButtonHanler(this._handler);
+    this.setDeleteButtonClickHandler(this._deleteButtonClickHandler);
+    this.setSendCommentHandler(this._setCommentHandler);
   }
 
+  // Удаление комментария
+  setDeleteButtonClickHandler(handler) {
+    const deleteCommentButtons = this._element.querySelectorAll(`.film-details__comment-delete`);
+    if (deleteCommentButtons) {
+      Array.from(deleteCommentButtons).forEach((button) => button.addEventListener(`click`, handler));
+    }
+
+    this._deleteButtonClickHandler = handler;
+
+  }
+
+  // Отправка нового комментария
+  setSendCommentHandler(handler) {
+    const textComment = this._element.querySelector(`.film-details__comment-input`);
+    textComment.addEventListener(`keydown`, handler);
+    this._setCommentHandler = handler;
+  }
+
+  // Добавление фильма в списки
   setWatchlistButtonClickHandler(handler) {
     this._element.querySelector(`.film-details__control-label--watchlist`)
     .addEventListener(`click`, handler);
@@ -218,11 +241,47 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
     this._favoriteHandler = handler;
   }
 
+  // Закрытие попапа
   setEscCloseButtonHanler(handler) {
     this._element.querySelector(`.film-details__close-btn`)
     .addEventListener(`click`, handler);
 
     this._handler = handler;
+  }
+
+  // Сборка данных нового комментария
+  gatherComment() {
+    const textComment = this._element.querySelector(`.film-details__comment-input`);
+    const emojiElement = this._element.querySelector(`.film-details__add-emoji-label`).firstElementChild;
+
+    const text = textComment.value;
+    const emoji = emojiElement ? emojiElement.src : ``;
+
+    if (!emoji || !text) {
+      return null;
+    }
+
+    const date = new Date();
+    const id = String(new Date() + Math.random());
+    const author = `Me`;
+
+    return {
+      text,
+      emoji,
+      author,
+      date,
+      id,
+    };
+  }
+
+  resetAddCommentForm() {
+    const textComment = this._element.querySelector(`.film-details__comment-input`);
+    textComment.value = ``;
+    const emojiElement = this._element.querySelector(`.film-details__add-emoji-label`).firstElementChild;
+
+    if (emojiElement) {
+      emojiElement.remove();
+    }
   }
 
   _setCommentsEmoji() {
@@ -241,6 +300,4 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
       }
     });
   }
-
-
 }
