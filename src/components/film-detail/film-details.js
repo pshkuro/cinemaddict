@@ -203,10 +203,9 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
 
   // Удаление комментария
   setDeleteButtonClickHandler(handler) {
-    const deleteCommentButton = this._element.querySelector(`.film-details__comment-delete`);
-    if (deleteCommentButton) {
-      deleteCommentButton
-    .addEventListener(`click`, handler);
+    const deleteCommentButtons = this._element.querySelectorAll(`.film-details__comment-delete`);
+    if (deleteCommentButtons) {
+      Array.from(deleteCommentButtons).forEach((button) => button.addEventListener(`click`, handler));
     }
 
     this._deleteButtonClickHandler = handler;
@@ -263,16 +262,26 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
     }
 
     const date = new Date();
-    const id = Math.random();
+    const id = String(new Date() + Math.random());
     const author = `Me`;
 
     return {
       text,
       emoji,
+      author,
       date,
       id,
-      author
     };
+  }
+
+  resetAddCommentForm() {
+    const textComment = this._element.querySelector(`.film-details__comment-input`);
+    textComment.value = ``;
+    const emojiElement = this._element.querySelector(`.film-details__add-emoji-label`).firstElementChild;
+
+    if (emojiElement) {
+      emojiElement.remove();
+    }
   }
 
   _setCommentsEmoji() {

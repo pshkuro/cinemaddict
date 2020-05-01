@@ -94,6 +94,7 @@ export default class FilmController {
 
     // Удаление комментария
     this._filmDetailsComponent.setDeleteButtonClickHandler((evt) => {
+
       evt.preventDefault();
 
       const deleteButton = evt.target;
@@ -153,6 +154,7 @@ export default class FilmController {
   }
 
   _onFilmDetailCloseClick() {
+    this._filmDetailsComponent.resetAddCommentForm();
     this._filmDetailsComponent.getElement().remove();
     document.removeEventListener(`keydown`, this._onFilmEscClose);
   }
