@@ -178,6 +178,7 @@ export default class PageController {
   }
 
   _onFilterChange() {
+    this._sortComponent.reset();
     this._updateFilms(SHOWING_CARDS_COUNT_ON_START);
   }
 

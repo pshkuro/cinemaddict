@@ -264,7 +264,7 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
 
     const date = new Date();
     const id = Math.random();
-    const author = `user`;
+    const author = `Me`;
 
     return {
       text,
