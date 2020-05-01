@@ -201,12 +201,7 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
     this.setSendCommentHandler(this._setCommentHandler);
   }
 
-  // getData() {
-  //   const form = this.getElement().querySelector(`.film-details__inner`);
-  //   const formData = new FormData(form);
-  //   return parseFormData(formData);
-  // }
-
+  // Удаление комментария
   setDeleteButtonClickHandler(handler) {
     const deleteCommentButton = this._element.querySelector(`.film-details__comment-delete`);
     if (deleteCommentButton) {
@@ -218,12 +213,14 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
 
   }
 
+  // Отправка нового комментария
   setSendCommentHandler(handler) {
     const textComment = this._element.querySelector(`.film-details__comment-input`);
     textComment.addEventListener(`keydown`, handler);
     this._setCommentHandler = handler;
   }
 
+  // Добавление фильма в списки
   setWatchlistButtonClickHandler(handler) {
     this._element.querySelector(`.film-details__control-label--watchlist`)
     .addEventListener(`click`, handler);
@@ -245,6 +242,7 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
     this._favoriteHandler = handler;
   }
 
+  // Закрытие попапа
   setEscCloseButtonHanler(handler) {
     this._element.querySelector(`.film-details__close-btn`)
     .addEventListener(`click`, handler);
@@ -252,6 +250,7 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
     this._handler = handler;
   }
 
+  // Сборка данных нового комментария
   gatherComment() {
     const textComment = this._element.querySelector(`.film-details__comment-input`);
     const emojiElement = this._element.querySelector(`.film-details__add-emoji-label`).firstElementChild;

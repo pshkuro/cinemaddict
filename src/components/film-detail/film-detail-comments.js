@@ -1,5 +1,6 @@
 import {formatCommentsDate} from "../../utils/date";
 import AbstractComponent from "../abstract-component";
+import {encode} from "he";
 
 // Генерация 1 комментария
 export default class FilmsCommentsComponent extends AbstractComponent {
@@ -14,12 +15,13 @@ export default class FilmsCommentsComponent extends AbstractComponent {
   }
 
   getTemplate() {
+    const text = encode(this._text);
     return (`<li class="film-details__comment" id="${this._id}">
   <span class="film-details__comment-emoji">
     <img src="${this._emoji}" width="55" height="55" alt="emoji-smile">
   </span>
   <div>
-    <p class="film-details__comment-text">${this._text}</p>
+    <p class="film-details__comment-text">${text}</p>
     <p class="film-details__comment-info">
       <span class="film-details__comment-author">${this._author}</span>
       <span class="film-details__comment-day">${formatCommentsDate(this._date)}</span>

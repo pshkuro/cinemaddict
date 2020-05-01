@@ -28,6 +28,7 @@ export default class FilmController {
     this._filmDetailsComponent = new FilmDetailsComponent(film);
 
 
+    // Открытие попапа
     this._filmCardComponent.setOpenPopapHandler((evt) => {
       this._onViewChange();
       const popupTarget = evt.target.closest(`.film-card__poster, .film-card__title, .film-card__comments`);
@@ -36,6 +37,7 @@ export default class FilmController {
       }
     });
 
+    // Работа с добавлением в списки - Карточка
     this._filmCardComponent.setWatchedButtonClickHandler((evt) => {
       evt.preventDefault();
       this._onDataChange(this, film, Object.assign({}, film, {
@@ -62,6 +64,7 @@ export default class FilmController {
       }));
     });
 
+    // Работа с добавлением в спики - Попап
     this._filmDetailsComponent.setWatchedButtonClickHandler((evt) => {
       evt.preventDefault();
       this._onDataChange(this, film, Object.assign({}, film, {
@@ -89,6 +92,7 @@ export default class FilmController {
       }));
     });
 
+    // Удаление комментария
     this._filmDetailsComponent.setDeleteButtonClickHandler((evt) => {
       evt.preventDefault();
 
@@ -100,6 +104,7 @@ export default class FilmController {
       this._onDataChange(this, film, Object.assign(film, {comments}));
     });
 
+    // Добавление комментария
     this._filmDetailsComponent.setSendCommentHandler((evt) => {
       const isCtrlAndEnter = evt.code === `Enter` && (evt.ctrlKey || evt.metaKey);
       if (isCtrlAndEnter) {
@@ -112,6 +117,7 @@ export default class FilmController {
       }
     });
 
+    // Рендер фильмов
     if (oldFilmComponent && oldFilmDetailsComponent) {
       replace(this._filmCardComponent, oldFilmComponent);
       replace(this._filmDetailsComponent, oldFilmDetailsComponent);
