@@ -43,7 +43,8 @@ const getSortedFilms = (films, sortType, from, before) => {
 // Содержит логику рендеринга блока FilmContent на странице
 export default class PageController {
   constructor(container, filmsModel) {
-    this._container = container.getElement();
+    this._container = container;
+    this._containerElement = container.getElement();
     this._filmsModel = filmsModel;
     this._showedFilmsControllers = []; // Фильмы, которые сейчас отображены на странице - подписчики
 
@@ -68,10 +69,10 @@ export default class PageController {
 
   render() {
     const films = this._filmsModel.getFilms();
-    render(this._container, this._sortComponent, RenderPosition.BEFOREEND);
+    render(this._containerElement, this._sortComponent, RenderPosition.BEFOREEND);
 
     // Создает filmList
-    render(this._container, this._filmsListComponent, RenderPosition.BEFOREEND);
+    render(this._containerElement, this._filmsListComponent, RenderPosition.BEFOREEND);
 
     // Если нет фильмов, выводим сообщение-заглушку
     const noFilms = films.length === 0;
@@ -98,6 +99,14 @@ export default class PageController {
     this._renderFilmsExtra(this._filmsTopCommented, this._filmsCommentedSorted);
   }
 
+  hide() {
+    this._container.hide();
+  }
+
+  show() {
+    this._container.show();
+  }
+
   _removeFilms() {
     this._showedFilmsControllers.forEach((filmController) => filmController.destroy());
     this._showedFilmsControllers = [];
@@ -119,7 +128,7 @@ export default class PageController {
 
   // Блок EXTRA
   _renderFilmsExtra(component, filmsRatedSorted) {
-    render(this._container, component, RenderPosition.BEFOREEND);
+    render(this._containerElement, component, RenderPosition.BEFOREEND);
     const topRatedFilmsContainer = component.getElement().querySelector(`.films-list__container`);
 
     const newFilms = renderFilms(topRatedFilmsContainer, filmsRatedSorted.slice(0, FILM_EXTRA_COUNT),
@@ -169,7 +178,7 @@ export default class PageController {
       this._renderFilms(sortedFilms);
       this._rerenderFilmsExtra();
 
-      const showMoreButton = this._container.querySelector(`.films-list__show-more`);
+      const showMoreButton = this._containerElement.querySelector(`.films-list__show-more`);
       if (!showMoreButton) {
         this._renderShowMoreButton(this._filmsModel.getFilms());
       }

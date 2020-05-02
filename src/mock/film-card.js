@@ -51,6 +51,7 @@ const generateCard = () => {
       isWatchlist: Math.random() > 0.5,
       isWatched: Math.random() > 0.5,
       isFavorite: Math.random() > 0.5,
+      watchingDate: getRandomDate(new Date(2020, 0, 26), new Date()),
     },
     comments: generateCommentList(),
   };
