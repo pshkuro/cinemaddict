@@ -129,6 +129,7 @@ export default class PageController {
   // Блок EXTRA
   _renderFilmsExtra(component, filmsRatedSorted) {
     render(this._containerElement, component, RenderPosition.BEFOREEND);
+  
     const topRatedFilmsContainer = component.getElement().querySelector(`.films-list__container`);
 
     const newFilms = renderFilms(topRatedFilmsContainer, filmsRatedSorted.slice(0, FILM_EXTRA_COUNT),

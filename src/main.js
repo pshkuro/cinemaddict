@@ -8,7 +8,9 @@ import ProfileComponent from './components/header/profile';
 import StatisticsComponent from "./components/header/statistics";
 import {render, RenderPosition, remove} from "./utils/render";
 
-const api = new API; // Массив объектов карточек кол-ом CARD_FILM_COUNT
+const AUTHORIZATION = `Basic dXNlckBwYXNzd29yZAo=`;
+
+const api = new API(AUTHORIZATION); // Массив объектов карточек кол-ом CARD_FILM_COUNT
 const filmsModel = new FilmsModel();
 
 
@@ -24,7 +26,7 @@ filtersController.render();
 // Рендерим блок FilmContent на страницу
 render(mainPageElement, filmsContentComponent, RenderPosition.BEFOREEND);
 // Рендерим количество фильмов в футер
-render(footerStatisticsElement, new FilmCountComponent(films), RenderPosition.BEFOREEND);
+// render(footerStatisticsElement, new FilmCountComponent(films), RenderPosition.BEFOREEND);
 
 
 // Переключение полей статистика и фильмы
