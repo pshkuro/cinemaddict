@@ -1,39 +1,28 @@
-import ProfileComponent from './components/header/profile';
+import API from "./api";
 import FiltersController from "./controllers/filters";
 import FilmContentComponent from "./components/film-content/film-content";
 import FilmCountComponent from "./components/statistic";
-import {generateCards} from "./mock/film-card";
-import {render, RenderPosition, remove} from "./utils/render";
-import PageController from "./controllers/page-content";
 import FilmsModel from "./models/films";
+import PageController from "./controllers/page-content";
+import ProfileComponent from './components/header/profile';
 import StatisticsComponent from "./components/header/statistics";
+import {render, RenderPosition, remove} from "./utils/render";
 
-const CARD_FILM_COUNT = 12;
-
-const films = generateCards(CARD_FILM_COUNT); // Массив объектов карточек кол-ом CARD_FILM_COUNT
+const api = new API; // Массив объектов карточек кол-ом CARD_FILM_COUNT
 const filmsModel = new FilmsModel();
-filmsModel.setFilms(films);
 
 
 const headerPageElement = document.querySelector(`header`);
-render(headerPageElement, new ProfileComponent(filmsModel.getAllFilms()), RenderPosition.BEFOREEND);
-
-export const mainPageElement = document.querySelector(`.main`);
+const mainPageElement = document.querySelector(`.main`);
 const footerStatisticsElement = document.querySelector(`.footer__statistics`);
-
-
 const filtersController = new FiltersController(mainPageElement, filmsModel);
-filtersController.render();
-
-// Рендерим блок FilmContent на страницу
 const filmsContentComponent = new FilmContentComponent();
-render(mainPageElement, filmsContentComponent, RenderPosition.BEFOREEND);
-
-// Отрисовка логики внутри этого блока
 const filmContentController = new PageController(filmsContentComponent, filmsModel); // передаем контейнер, внутри которого все это происходит
-filmContentController.render();
 
-
+render(headerPageElement, new ProfileComponent(filmsModel.getAllFilms()), RenderPosition.BEFOREEND);
+filtersController.render();
+// Рендерим блок FilmContent на страницу
+render(mainPageElement, filmsContentComponent, RenderPosition.BEFOREEND);
 // Рендерим количество фильмов в футер
 render(footerStatisticsElement, new FilmCountComponent(films), RenderPosition.BEFOREEND);
 
@@ -61,4 +50,11 @@ mainPageElement.addEventListener(`click`, (evt) => {
     filmContentController.show();
   }
 });
+
+api.getFilms()
+  .then((films) => {
+    filmsModel.setFilms(films);
+    filmContentController.render();
+  });
+
 
