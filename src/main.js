@@ -3,9 +3,10 @@ import FiltersController from "./controllers/filters";
 import FilmContentComponent from "./components/film-content/film-content";
 import FilmCountComponent from "./components/statistic";
 import {generateCards} from "./mock/film-card";
-import {render, RenderPosition} from "./utils/render";
+import {render, RenderPosition, remove} from "./utils/render";
 import PageController from "./controllers/page-content";
 import FilmsModel from "./models/films";
+import StatisticsComponent from "./components/header/statistics";
 
 const CARD_FILM_COUNT = 12;
 
@@ -35,4 +36,29 @@ filmContentController.render();
 
 // Рендерим количество фильмов в футер
 render(footerStatisticsElement, new FilmCountComponent(films), RenderPosition.BEFOREEND);
+
+
+// Переключение полей статистика и фильмы
+let statisticComponent = null;
+mainPageElement.addEventListener(`click`, (evt) => {
+  const button = evt.target.closest(`.main-navigation__additional, .main-navigation__item`);
+
+  if (!button) {
+    return;
+  }
+
+  if (button.classList.contains(`main-navigation__additional`)) {
+    filmContentController.hide();
+    if (statisticComponent) {
+      remove(statisticComponent);
+    }
+    statisticComponent = new StatisticsComponent(filmsModel);
+    render(mainPageElement, statisticComponent, RenderPosition.BEFOREEND);
+  } else if (button.classList.contains(`main-navigation__item`)) {
+    if (statisticComponent) {
+      remove(statisticComponent);
+    }
+    filmContentController.show();
+  }
+});
 
