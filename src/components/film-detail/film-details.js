@@ -6,19 +6,21 @@ import AbstractSmartComponent from "../abstract-smart-component";
 
 // Генерация блока FilmsDetails
 export default class FilmDetailsComponent extends AbstractSmartComponent {
-  constructor(film) {
+  constructor(film, api) {
     super();
-    const {poster, wrap, rating, info, description, controls, comments} = film;
+    const {id, poster, wrap, rating, info, description, controls, comments} = film;
     const {title, original} = wrap;
-    const {director, writers, actors, date, duration, country, genre} = info;
+    const {director, ageRating, writers, actors, date, duration, country, genre} = info;
     const {isWatchlist, isWatched, isFavorite} = controls;
 
+    this._id = id;
     this._poster = poster;
     this._original = original;
     this._title = title;
     this._rating = rating;
 
     this._director = director;
+    this._ageRating = ageRating;
     this._writers = writers;
     this._actors = actors;
     this._date = date;
@@ -40,6 +42,18 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
     this._setCommentHandler = null;
     this._element = this.getElement();
     this._setCommentsEmoji();
+
+    this._api = api;
+    this._getComments();
+  }
+
+  _getComments() {
+    this._api
+      .getComments(this._id)
+      .then((comments) => {
+        this._comments = comments;
+        this.rerender();
+      });
   }
 
   _isButtonActive(isActive) {
@@ -68,7 +82,7 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
             <div class="film-details__poster">
               <img class="film-details__poster-img" src="${this._poster}" alt="">
     
-              <p class="film-details__age">18+</p>
+              <p class="film-details__age">${this._ageRating}+</p>
             </div>
     
             <div class="film-details__info">

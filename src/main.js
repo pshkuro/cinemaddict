@@ -3,30 +3,34 @@ import FiltersController from "./controllers/filters";
 import FilmContentComponent from "./components/film-content/film-content";
 import FilmCountComponent from "./components/statistic";
 import FilmsModel from "./models/films";
+import LoadingComponent from "./components/loading";
 import PageController from "./controllers/page-content";
 import ProfileComponent from './components/header/profile';
 import StatisticsComponent from "./components/header/statistics";
 import {render, RenderPosition, remove} from "./utils/render";
 
-const AUTHORIZATION = `Basic dXNlckBwYXNzd29yZAo=`;
+const AUTHORIZATION = `Basic kTy9gIdsz2317rD`;
+const END_POINT = `https://11.ecmascript.pages.academy/cinemaddict`;
 
-const api = new API(AUTHORIZATION); // Массив объектов карточек кол-ом CARD_FILM_COUNT
+const api = new API(END_POINT, AUTHORIZATION); // Массив объектов карточек кол-ом CARD_FILM_COUNT
 const filmsModel = new FilmsModel();
-
 
 const headerPageElement = document.querySelector(`header`);
 const mainPageElement = document.querySelector(`.main`);
 const footerStatisticsElement = document.querySelector(`.footer__statistics`);
 const filtersController = new FiltersController(mainPageElement, filmsModel);
+const loadingComponent = new LoadingComponent();
 const filmsContentComponent = new FilmContentComponent();
-const filmContentController = new PageController(filmsContentComponent, filmsModel); // передаем контейнер, внутри которого все это происходит
+const filmContentController = new PageController(filmsContentComponent, filmsModel, api); // передаем контейнер, внутри которого все это происходит
+
 
 render(headerPageElement, new ProfileComponent(filmsModel.getAllFilms()), RenderPosition.BEFOREEND);
 filtersController.render();
+render(mainPageElement, loadingComponent, RenderPosition.BEFOREEND);
 // Рендерим блок FilmContent на страницу
 render(mainPageElement, filmsContentComponent, RenderPosition.BEFOREEND);
 // Рендерим количество фильмов в футер
-// render(footerStatisticsElement, new FilmCountComponent(films), RenderPosition.BEFOREEND);
+// render(footerStatisticsElement, new FilmCountComponent(filmsModel.getAllFilms()), RenderPosition.BEFOREEND);
 
 
 // Переключение полей статистика и фильмы
@@ -55,8 +59,11 @@ mainPageElement.addEventListener(`click`, (evt) => {
 
 api.getFilms()
   .then((films) => {
+    remove(loadingComponent);
     filmsModel.setFilms(films);
     filmContentController.render();
   });
 
+
+render(footerStatisticsElement, new FilmCountComponent(filmsModel.getAllFilms()), RenderPosition.BEFOREEND);
 

@@ -2,6 +2,7 @@ import {render, replace, remove, RenderPosition} from "../utils/render";
 import FilmCardComponent from "../components/film-content/film-card";
 import FilmDetailsComponent from "../components/film-detail/film-details";
 
+
 export const State = {
   DEFAULT: `default`,
   DETAILS: `details`
@@ -9,8 +10,9 @@ export const State = {
 
 
 export default class FilmController {
-  constructor(container, onDataChange, onViewChange) {
+  constructor(container, onDataChange, onViewChange, api) {
     this._container = container;
+    this._api = api;
 
     this._filmCardComponent = null;
     this._filmDetailsComponent = null;
@@ -18,14 +20,17 @@ export default class FilmController {
     this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
     this._state = State.DEFAULT;
+    this._id = null;
+    this._film = null;
   }
 
   render(film, state) {
+    this._film = film;
     this._state = state;
     const oldFilmComponent = this._filmCardComponent;
     const oldFilmDetailsComponent = this._filmDetailsComponent;
     this._filmCardComponent = new FilmCardComponent(film);
-    this._filmDetailsComponent = new FilmDetailsComponent(film);
+    this._id = film.id;
 
 
     // Открытие попапа
@@ -56,33 +61,6 @@ export default class FilmController {
       }));
     });
 
-    this._filmDetailsComponent.setFavoriteButtonClickHandler(() => {
-      this._onDataChange(this, film, Object.assign({}, film, {
-        controls: Object.assign({}, film.controls, {
-          isFavorite: !film.controls.isFavorite,
-        })
-      }));
-    });
-
-    // Работа с добавлением в спики - Попап
-    this._filmDetailsComponent.setWatchedButtonClickHandler((evt) => {
-      evt.preventDefault();
-      this._onDataChange(this, film, Object.assign({}, film, {
-        controls: Object.assign({}, film.controls, {
-          isWatched: !film.controls.isWatched,
-        })
-      }));
-    });
-
-    this._filmDetailsComponent.setWatchlistButtonClickHandler((evt) => {
-      evt.preventDefault();
-      this._onDataChange(this, film, Object.assign({}, film, {
-        controls: Object.assign({}, film.controls, {
-          isWatchlist: !film.controls.isWatchlist,
-        })
-      }));
-    });
-
     this._filmCardComponent.setFavoriteButtonClickHandler((evt) => {
       evt.preventDefault();
       this._onDataChange(this, film, Object.assign({}, film, {
@@ -92,37 +70,11 @@ export default class FilmController {
       }));
     });
 
-    // Удаление комментария
-    this._filmDetailsComponent.setDeleteButtonClickHandler((evt) => {
-
-      evt.preventDefault();
-
-      const deleteButton = evt.target;
-      const commentItem = deleteButton.closest(`.film-details__comment`);
-      const removeCommentId = commentItem.id;
-      const comments = film.comments.filter((comment) => comment.id !== removeCommentId);
-
-      this._onDataChange(this, film, Object.assign(film, {comments}));
-    });
-
-    // Добавление комментария
-    this._filmDetailsComponent.setSendCommentHandler((evt) => {
-      const isCtrlAndEnter = evt.code === `Enter` && (evt.ctrlKey || evt.metaKey);
-      if (isCtrlAndEnter) {
-        const comment = this._filmDetailsComponent.gatherComment();
-        if (!comment) {
-          return;
-        }
-        const newComments = film.comments.concat(comment);
-        this._onDataChange(this, film, Object.assign(film, {comments: newComments}));
-      }
-    });
-
     // Рендер фильмов
-    if (oldFilmComponent && oldFilmDetailsComponent) {
+    if (oldFilmComponent) {
       replace(this._filmCardComponent, oldFilmComponent);
-      replace(this._filmDetailsComponent, oldFilmDetailsComponent);
-      this._openFilmDetailPopap();
+      // replace(this._filmDetailsComponent, oldFilmDetailsComponent);
+      // this._openFilmDetailPopap();
     } else {
       render(this._container, this._filmCardComponent, RenderPosition.BEFOREEND);
     }
@@ -135,13 +87,70 @@ export default class FilmController {
   }
 
   destroy() {
-    remove(this._filmDetailsComponent);
     remove(this._filmCardComponent);
     document.removeEventListener(`keydown`, this._onEscKeyDown);
   }
 
+  _renderFilmDetailsPopup() {
+    this._filmDetailsComponent = new FilmDetailsComponent(this._film, this._api);
+
+    // Работа с добавлением в спики - Попап
+    this._filmDetailsComponent.setWatchedButtonClickHandler((evt) => {
+      evt.preventDefault();
+      this._onDataChange(this, this._film, Object.assign({}, this._film, {
+        controls: Object.assign({}, this._film.controls, {
+          isWatched: !this._film.controls.isWatched,
+        })
+      }));
+    });
+
+    this._filmDetailsComponent.setWatchlistButtonClickHandler((evt) => {
+      evt.preventDefault();
+      this._onDataChange(this, this._film, Object.assign({}, this._film, {
+        controls: Object.assign({}, this._film.controls, {
+          isWatchlist: !this._film.controls.isWatchlist,
+        })
+      }));
+    });
+
+    this._filmDetailsComponent.setFavoriteButtonClickHandler(() => {
+      this._onDataChange(this, this._film, Object.assign({}, this._film, {
+        controls: Object.assign({}, this._film.controls, {
+          isFavorite: !this._film.controls.isFavorite,
+        })
+      }));
+    });
+
+    // Удаление комментария
+    this._filmDetailsComponent.setDeleteButtonClickHandler((evt) => {
+
+      evt.preventDefault();
+
+      const deleteButton = evt.target;
+      const commentItem = deleteButton.closest(`.film-details__comment`);
+      const removeCommentId = commentItem.id;
+      const comments = this._film.comments.filter((comment) => comment.id !== removeCommentId);
+
+      this._onDataChange(this, this._film, Object.assign(this._film, {comments}));
+    });
+
+    // Добавление комментария
+    this._filmDetailsComponent.setSendCommentHandler((evt) => {
+      const isCtrlAndEnter = evt.code === `Enter` && (evt.ctrlKey || evt.metaKey);
+      if (isCtrlAndEnter) {
+        const comment = this._filmDetailsComponent.gatherComment();
+        if (!comment) {
+          return;
+        }
+        const newComments = this._film.comments.concat(comment);
+        this._onDataChange(this, this._film, Object.assign(this._film, {comments: newComments}));
+      }
+    });
+  }
+
   // Открываем карточку
   _openFilmDetailPopap() {
+    this._renderFilmDetailsPopup();
     document.body.appendChild(this._filmDetailsComponent.getElement());
     const onFilmDetailCloseClick = this._onFilmDetailCloseClick.bind(this);
     this._state = State.DETAILS;

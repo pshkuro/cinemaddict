@@ -2,6 +2,7 @@ export default class FilmModel {
   constructor(data) {
     const {
       id,
+      comments,
       film_info: {
         title,
         poster,
@@ -12,6 +13,7 @@ export default class FilmModel {
         description,
         alternative_title: original,
         total_rating: rating,
+        age_rating: ageRating,
         runtime: duration,
         release: {
           date,
@@ -26,6 +28,7 @@ export default class FilmModel {
       }
     } = data;
 
+    // Преобразование структуры сервера в локальную структуру
     return {
       id,
       poster,
@@ -36,6 +39,7 @@ export default class FilmModel {
       rating,
       info: {
         director,
+        ageRating,
         writers,
         actors,
         date: new Date(date),
@@ -50,35 +54,50 @@ export default class FilmModel {
         isFavorite,
         watchingDate: new Date(watchingDate)
       },
-      comments: []
+      comments,
     };
-
-    // this.id = data.id;
-    // this.poster = data.film_info.poster;
-
-    // this.wrap = {title, original};
-    // this.title = data.film_info.title;
-    // this.original = data.film_info.alternative_title;
-
-    // this.rating = data.film_info.total_rating;
-
-    // this.info = {director, writers, actors, date, duration, country, genre};
-    // this.director = data.film_info.director;
-    // this.writers = data.film_info.director;
-    // this.actors = data.film_info.actors;
-    // this.date = new Date(data.film_info.release.date);
-    // this.duration = data.film_info.runtime;
-    // this.country = data.film_info.release.release_country;
-    // this.genre = data.film_info.genre;
-
-    // this.description = data.film_info.description;
-
-    // this.controls = {isWatchlist, isWatched, isFavorite, watchingDate};
-    // this.isWatchlist = data.user_details.watchlist;
-    // this.isWatched = data.user_details.already_watched;
-    // this.isFavorite = data.user_details.favorite;
-    // this.watchingDate = new Date(data.user_details.watching_date);
-
-    // comments: generateCommentList(),
   }
+
+  // Преобразование локальной структуры в структуру сервера
+  static toRAW(data) {
+    return {
+      "id": data.id,
+      "comments": data.comments,
+      "film_info": {
+        "title": data.wrap.title,
+        "alternative_title": data.wrap.original,
+        "total_rating": data.rating,
+        "poster": data.poster,
+        "age_rating": data.info.ageRating,
+        "director": data.info.director,
+        "writers": data.info.writers,
+        "actors": data.info.actors,
+        "release": {
+          "date": data.info.date,
+          "release_country": data.info.country
+        },
+        "runtime": data.info.duration,
+        "genre": data.info.genre,
+        "description": data.description,
+      },
+      "user_details": {
+        "watchlist": data.controls.isWatchlist,
+        "already_watched": data.controls.isWatched,
+        "watching_date": data.controls.watchingDate,
+        "favorite": data.controls.isFavorite
+      }
+    };
+  }
+
+  static parseFilm(data) {
+    return new FilmModel(data);
+  }
+
+  static parseFilms(data) {
+    return data.map(FilmModel.parseFilm);
+  }
+
+  // static clone(data) {
+  //   // return FilmModel.toRAW();
+  // }
 }
