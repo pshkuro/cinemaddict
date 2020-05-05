@@ -4,6 +4,24 @@ import FilmsCommentsComponent from "./film-detail-comments";
 import FilmsGenresComponent from "./film-detail-ganre";
 import AbstractSmartComponent from "../abstract-smart-component";
 
+class Observable {
+  constructor() {
+    this.subscribers = new Set();
+  }
+
+  subscribe(subscriber) {
+    this.subscribers.add(subscriber);
+  }
+
+  unsubscribe(subscriber) {
+    this.subscribers.delete(subscriber);
+  }
+
+  notify(changes) {
+    this.subscribers.forEach((subscriber) => subscriber(changes));
+  }
+}
+
 // Генерация блока FilmsDetails
 export default class FilmDetailsComponent extends AbstractSmartComponent {
   constructor(film, api) {
@@ -33,18 +51,22 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
     this._isFavorite = isFavorite;
     this._comments = comments;
     this._commentEmoji = null;
+    this._api = api;
+    this._getComments();
 
     this._watchlistHandler = null;
     this._watchedHandler = null;
     this._favoriteHandler = null;
     this._handler = null;
-    this._deleteButtonClickHandler = null;
+    // this._deleteButtonClickHandler = null;
     this._setCommentHandler = null;
     this._element = this.getElement();
     this._setCommentsEmoji();
 
-    this._api = api;
-    this._getComments();
+    this.commentsChanges = new Observable();
+    this.watchListChanges = new Observable();
+    this.watchedChanges = new Observable();
+    this.favoritesChanges = new Observable();
   }
 
   _getComments() {
@@ -211,19 +233,24 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
     this.setFavoriteButtonClickHandler(this._favoriteHandler);
     this._setCommentsEmoji();
     this.setEscCloseButtonHanler(this._handler);
-    this.setDeleteButtonClickHandler(this._deleteButtonClickHandler);
+    this.setDeleteButtonClickHandler();
     this.setSendCommentHandler(this._setCommentHandler);
   }
 
   // Удаление комментария
-  setDeleteButtonClickHandler(handler) {
+  setDeleteButtonClickHandler() {
     const deleteCommentButtons = this._element.querySelectorAll(`.film-details__comment-delete`);
     if (deleteCommentButtons) {
-      Array.from(deleteCommentButtons).forEach((button) => button.addEventListener(`click`, handler));
+      Array.from(deleteCommentButtons).forEach((button) => button.addEventListener(`click`, (evt) => {
+        evt.preventDefault();
+
+        const deleteButton = evt.target;
+        const comment = deleteButton.closest(`.film-details__comment`);
+        const removeCommentId = comment.id;
+
+        this._deleteComment(removeCommentId);
+      }));
     }
-
-    this._deleteButtonClickHandler = handler;
-
   }
 
   // Отправка нового комментария
@@ -236,21 +263,30 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
   // Добавление фильма в списки
   setWatchlistButtonClickHandler(handler) {
     this._element.querySelector(`.film-details__control-label--watchlist`)
-    .addEventListener(`click`, handler);
+    .addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+      this._toggleWatchList();
+    });
 
     this._watchlistHandler = handler;
   }
 
   setWatchedButtonClickHandler(handler) {
     this._element.querySelector(`.film-details__control-label--watched`)
-    .addEventListener(`click`, handler);
+    .addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+      this._toggleWatched();
+    });
 
     this._watchedHandler = handler;
   }
 
   setFavoriteButtonClickHandler(handler) {
     this._element.querySelector(`.film-details__control-label--favorite`)
-    .addEventListener(`click`, handler);
+    .addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+      this._toggleFavorites();
+    });
 
     this._favoriteHandler = handler;
   }
@@ -313,5 +349,32 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
         this.rerender();
       }
     });
+  }
+
+  _toggleWatchList() {
+    this._isWatchlist = !this._isWatchlist;
+    this.watchListChanges.notify(this._isWatchlist);
+    this.rerender();
+  }
+
+  _toggleWatched() {
+    this._isWatched = !this._isWatched;
+    this.watchedChanges.notify(this._isWatched);
+    this.rerender();
+  }
+
+  _toggleFavorites() {
+    this._isFavorite = !this._isFavorite;
+    this.favoritesChanges.notify(this._isFavorite);
+    this.rerender();
+  }
+
+  _deleteComment(commentId) {
+    this._api.deleteComment(commentId)
+      .then(() => {
+        this._comments = this._comments.filter((comment) => comment.id !== commentId);
+        this.commentsChanges.notify(this._comments.map((comment) => comment.id));
+        this.rerender();
+      });
   }
 }

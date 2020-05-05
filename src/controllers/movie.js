@@ -28,7 +28,6 @@ export default class FilmController {
     this._film = film;
     this._state = state;
     const oldFilmComponent = this._filmCardComponent;
-    const oldFilmDetailsComponent = this._filmDetailsComponent;
     this._filmCardComponent = new FilmCardComponent(film);
     this._id = film.id;
 
@@ -73,8 +72,6 @@ export default class FilmController {
     // Рендер фильмов
     if (oldFilmComponent) {
       replace(this._filmCardComponent, oldFilmComponent);
-      // replace(this._filmDetailsComponent, oldFilmDetailsComponent);
-      // this._openFilmDetailPopap();
     } else {
       render(this._container, this._filmCardComponent, RenderPosition.BEFOREEND);
     }
@@ -93,46 +90,38 @@ export default class FilmController {
 
   _renderFilmDetailsPopup() {
     this._filmDetailsComponent = new FilmDetailsComponent(this._film, this._api);
-
     // Работа с добавлением в спики - Попап
-    this._filmDetailsComponent.setWatchedButtonClickHandler((evt) => {
-      evt.preventDefault();
+    this._filmDetailsComponent.watchListChanges.subscribe((isWatchlist) => {
       this._onDataChange(this, this._film, Object.assign({}, this._film, {
-        controls: Object.assign({}, this._film.controls, {
-          isWatched: !this._film.controls.isWatched,
-        })
+        controls: Object.assign({}, this._film.controls, {isWatchlist})
       }));
     });
 
-    this._filmDetailsComponent.setWatchlistButtonClickHandler((evt) => {
-      evt.preventDefault();
+    this._filmDetailsComponent.watchedChanges.subscribe((isWatched) => {
       this._onDataChange(this, this._film, Object.assign({}, this._film, {
-        controls: Object.assign({}, this._film.controls, {
-          isWatchlist: !this._film.controls.isWatchlist,
-        })
+        controls: Object.assign({}, this._film.controls, {isWatched})
       }));
     });
 
-    this._filmDetailsComponent.setFavoriteButtonClickHandler(() => {
+    this._filmDetailsComponent.favoritesChanges.subscribe((isFavorite) => {
       this._onDataChange(this, this._film, Object.assign({}, this._film, {
-        controls: Object.assign({}, this._film.controls, {
-          isFavorite: !this._film.controls.isFavorite,
-        })
+        controls: Object.assign({}, this._film.controls, {isFavorite})
       }));
     });
 
     // Удаление комментария
-    this._filmDetailsComponent.setDeleteButtonClickHandler((evt) => {
-
-      evt.preventDefault();
-
-      const deleteButton = evt.target;
-      const commentItem = deleteButton.closest(`.film-details__comment`);
-      const removeCommentId = commentItem.id;
-      const comments = this._film.comments.filter((comment) => comment.id !== removeCommentId);
-
+    this._filmDetailsComponent.commentsChanges.subscribe((comments) => {
       this._onDataChange(this, this._film, Object.assign(this._film, {comments}));
     });
+
+    // this._filmDetailsComponent.setDeleteButtonClickHandler((evt) => {
+    //   // evt.preventDefault();
+
+    //   // const deleteButton = evt.target;
+    //   // const commentItem = deleteButton.closest(`.film-details__comment`);
+    //   // const removeCommentId = commentItem.id;
+    //   // this._onDataChange(this, this._film, Object.assign(this._film, {comments}));
+    // });
 
     // Добавление комментария
     this._filmDetailsComponent.setSendCommentHandler((evt) => {
@@ -151,6 +140,7 @@ export default class FilmController {
   // Открываем карточку
   _openFilmDetailPopap() {
     this._renderFilmDetailsPopup();
+
     document.body.appendChild(this._filmDetailsComponent.getElement());
     const onFilmDetailCloseClick = this._onFilmDetailCloseClick.bind(this);
     this._state = State.DETAILS;

@@ -29,8 +29,6 @@ filtersController.render();
 render(mainPageElement, loadingComponent, RenderPosition.BEFOREEND);
 // Рендерим блок FilmContent на страницу
 render(mainPageElement, filmsContentComponent, RenderPosition.BEFOREEND);
-// Рендерим количество фильмов в футер
-// render(footerStatisticsElement, new FilmCountComponent(filmsModel.getAllFilms()), RenderPosition.BEFOREEND);
 
 
 // Переключение полей статистика и фильмы
@@ -57,13 +55,13 @@ mainPageElement.addEventListener(`click`, (evt) => {
   }
 });
 
+
 api.getFilms()
   .then((films) => {
     remove(loadingComponent);
     filmsModel.setFilms(films);
     filmContentController.render();
+    // Рендерим количество фильмов в футер
+    render(footerStatisticsElement, new FilmCountComponent(films), RenderPosition.BEFOREEND);
   });
-
-
-render(footerStatisticsElement, new FilmCountComponent(filmsModel.getAllFilms()), RenderPosition.BEFOREEND);
 

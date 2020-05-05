@@ -36,6 +36,9 @@ const API = class {
       .then(CommentModel.parseComments);
   }
 
+  deleteComment(id) {
+    return this._load({url: `comments/${id}`, method: Method.DELETE});
+  }
 
   updateFilm(id, data) {
     return this._load({

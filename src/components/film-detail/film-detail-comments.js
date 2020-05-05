@@ -15,8 +15,9 @@ export default class FilmsCommentsComponent extends AbstractComponent {
   }
 
   getTemplate() {
-    if (!this._text) return '';
-    
+    if (!this._text) {
+      return ``;
+    }
     const text = encode(this._text);
     return (`<li class="film-details__comment" id="${this._id}">
   <span class="film-details__comment-emoji">
