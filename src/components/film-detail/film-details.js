@@ -4,21 +4,41 @@ import FilmsCommentsComponent from "./film-detail-comments";
 import FilmsGenresComponent from "./film-detail-ganre";
 import AbstractSmartComponent from "../abstract-smart-component";
 
+class Observable {
+  constructor() {
+    this.subscribers = new Set();
+  }
+
+  subscribe(subscriber) {
+    this.subscribers.add(subscriber);
+  }
+
+  unsubscribe(subscriber) {
+    this.subscribers.delete(subscriber);
+  }
+
+  notify(changes) {
+    this.subscribers.forEach((subscriber) => subscriber(changes));
+  }
+}
+
 // Генерация блока FilmsDetails
 export default class FilmDetailsComponent extends AbstractSmartComponent {
-  constructor(film) {
+  constructor(film, api) {
     super();
-    const {poster, wrap, rating, info, description, controls, comments} = film;
+    const {id, poster, wrap, rating, info, description, controls, comments} = film;
     const {title, original} = wrap;
-    const {director, writers, actors, date, duration, country, genre} = info;
+    const {director, ageRating, writers, actors, date, duration, country, genre} = info;
     const {isWatchlist, isWatched, isFavorite} = controls;
 
+    this._id = id;
     this._poster = poster;
     this._original = original;
     this._title = title;
     this._rating = rating;
 
     this._director = director;
+    this._ageRating = ageRating;
     this._writers = writers;
     this._actors = actors;
     this._date = date;
@@ -31,15 +51,31 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
     this._isFavorite = isFavorite;
     this._comments = comments;
     this._commentEmoji = null;
+    this._api = api;
+    this._getComments();
 
     this._watchlistHandler = null;
     this._watchedHandler = null;
     this._favoriteHandler = null;
     this._handler = null;
-    this._deleteButtonClickHandler = null;
+    // this._deleteButtonClickHandler = null;
     this._setCommentHandler = null;
     this._element = this.getElement();
     this._setCommentsEmoji();
+
+    this.commentsChanges = new Observable();
+    this.watchListChanges = new Observable();
+    this.watchedChanges = new Observable();
+    this.favoritesChanges = new Observable();
+  }
+
+  _getComments() {
+    this._api
+      .getComments(this._id)
+      .then((comments) => {
+        this._comments = comments;
+        this.rerender();
+      });
   }
 
   _isButtonActive(isActive) {
@@ -66,9 +102,9 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
           </div>
           <div class="film-details__info-wrap">
             <div class="film-details__poster">
-              <img class="film-details__poster-img" src="./images/posters/${this._poster}" alt="">
+              <img class="film-details__poster-img" src="${this._poster}" alt="">
     
-              <p class="film-details__age">18+</p>
+              <p class="film-details__age">${this._ageRating}+</p>
             </div>
     
             <div class="film-details__info">
@@ -197,19 +233,24 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
     this.setFavoriteButtonClickHandler(this._favoriteHandler);
     this._setCommentsEmoji();
     this.setEscCloseButtonHanler(this._handler);
-    this.setDeleteButtonClickHandler(this._deleteButtonClickHandler);
+    this.setDeleteButtonClickHandler();
     this.setSendCommentHandler(this._setCommentHandler);
   }
 
   // Удаление комментария
-  setDeleteButtonClickHandler(handler) {
+  setDeleteButtonClickHandler() {
     const deleteCommentButtons = this._element.querySelectorAll(`.film-details__comment-delete`);
     if (deleteCommentButtons) {
-      Array.from(deleteCommentButtons).forEach((button) => button.addEventListener(`click`, handler));
+      Array.from(deleteCommentButtons).forEach((button) => button.addEventListener(`click`, (evt) => {
+        evt.preventDefault();
+
+        const deleteButton = evt.target;
+        const comment = deleteButton.closest(`.film-details__comment`);
+        const removeCommentId = comment.id;
+
+        this._deleteComment(removeCommentId);
+      }));
     }
-
-    this._deleteButtonClickHandler = handler;
-
   }
 
   // Отправка нового комментария
@@ -222,21 +263,30 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
   // Добавление фильма в списки
   setWatchlistButtonClickHandler(handler) {
     this._element.querySelector(`.film-details__control-label--watchlist`)
-    .addEventListener(`click`, handler);
+    .addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+      this._toggleWatchList();
+    });
 
     this._watchlistHandler = handler;
   }
 
   setWatchedButtonClickHandler(handler) {
     this._element.querySelector(`.film-details__control-label--watched`)
-    .addEventListener(`click`, handler);
+    .addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+      this._toggleWatched();
+    });
 
     this._watchedHandler = handler;
   }
 
   setFavoriteButtonClickHandler(handler) {
     this._element.querySelector(`.film-details__control-label--favorite`)
-    .addEventListener(`click`, handler);
+    .addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+      this._toggleFavorites();
+    });
 
     this._favoriteHandler = handler;
   }
@@ -299,5 +349,32 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
         this.rerender();
       }
     });
+  }
+
+  _toggleWatchList() {
+    this._isWatchlist = !this._isWatchlist;
+    this.watchListChanges.notify(this._isWatchlist);
+    this.rerender();
+  }
+
+  _toggleWatched() {
+    this._isWatched = !this._isWatched;
+    this.watchedChanges.notify(this._isWatched);
+    this.rerender();
+  }
+
+  _toggleFavorites() {
+    this._isFavorite = !this._isFavorite;
+    this.favoritesChanges.notify(this._isFavorite);
+    this.rerender();
+  }
+
+  _deleteComment(commentId) {
+    this._api.deleteComment(commentId)
+      .then(() => {
+        this._comments = this._comments.filter((comment) => comment.id !== commentId);
+        this.commentsChanges.notify(this._comments.map((comment) => comment.id));
+        this.rerender();
+      });
   }
 }

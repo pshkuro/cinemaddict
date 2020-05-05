@@ -12,9 +12,9 @@ const SHOWING_CARDS_COUNT_BY_BUTTON = 5;
 const SHOWING_CARDS_COUNT_ON_START = 5;
 const FILM_EXTRA_COUNT = 2;
 
-const renderFilms = (container, films, onDataChange, onViewChange) => {
+const renderFilms = (container, films, onDataChange, onViewChange, api) => {
   return films.map((film) => {
-    const filmController = new FilmController(container, onDataChange, onViewChange);
+    const filmController = new FilmController(container, onDataChange, onViewChange, api);
     filmController.render(film, FilmControllerState.DEFAULT);
 
     return filmController;
@@ -42,10 +42,11 @@ const getSortedFilms = (films, sortType, from, before) => {
 
 // Содержит логику рендеринга блока FilmContent на странице
 export default class PageController {
-  constructor(container, filmsModel) {
+  constructor(container, filmsModel, api) {
     this._container = container;
     this._containerElement = container.getElement();
     this._filmsModel = filmsModel;
+    this._api = api;
     this._showedFilmsControllers = []; // Фильмы, которые сейчас отображены на странице - подписчики
 
     this._filmsListComponent = new FilmsListComponent();
@@ -113,7 +114,7 @@ export default class PageController {
   }
 
   _renderFilms(films) {
-    const newFilms = renderFilms(this._filmListContainer, films, this._onDataChange, this._onViewChange);
+    const newFilms = renderFilms(this._filmListContainer, films, this._onDataChange, this._onViewChange, this._api);
     this._showedFilmsControllers = this._showedFilmsControllers.concat(newFilms);
     this._showingCardsCount = this._showedFilmsControllers.length;
   }
@@ -132,7 +133,7 @@ export default class PageController {
     const topRatedFilmsContainer = component.getElement().querySelector(`.films-list__container`);
 
     const newFilms = renderFilms(topRatedFilmsContainer, filmsRatedSorted.slice(0, FILM_EXTRA_COUNT),
-        this._onDataChange, this._onViewChange);
+        this._onDataChange, this._onViewChange, this._api);
     this._showedFilmsControllers = this._showedFilmsControllers.concat(newFilms);
   }
 
@@ -158,7 +159,7 @@ export default class PageController {
 
       const sortedFilms = getSortedFilms(films, this._sortComponent.getSortType(), prevCardsCount, this._showingCardsCount);
       const newFilms = renderFilms(this._filmListContainer, sortedFilms,
-          this._onDataChange, this._onViewChange);
+          this._onDataChange, this._onViewChange, this._api);
       this._showedFilmsControllers = this._showedFilmsControllers.concat(newFilms);
 
       if (this._showingCardsCount >= films.length) {
@@ -192,11 +193,15 @@ export default class PageController {
   }
 
   _onDataChange(filmController, oldData, newData) {
-    const isSuccess = this._filmsModel.updateFilms(oldData.id, newData);
+    this._api.updateFilm(oldData.id, newData)
+        .then((filmModel) => {
+          const isSuccess = this._filmsModel.updateFilms(oldData.id, filmModel);
 
-    if (isSuccess) {
-      filmController.render(newData);
-    }
+          if (isSuccess) {
+            filmController.render(filmModel);
+            this._updateFilms(this._showingCardsCount);
+          }
+        });
   }
 
   _onViewChange() {
