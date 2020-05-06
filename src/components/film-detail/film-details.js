@@ -34,6 +34,7 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
     this._isFavorite = isFavorite;
     this._comments = comments;
     this._commentEmoji = null;
+    this._text = ``;
     this._api = api;
     this._getComments();
 
@@ -52,6 +53,7 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
     this.favoritesChanges = new Observable();
   }
 
+  // Получение комментариев с сервера
   _getComments() {
     this._api
       .getComments(this._id)
@@ -173,7 +175,7 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
           </div>
   
           <label class="film-details__comment-label">
-            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" value="${this._text}"></textarea>
           </label>
   
           <div class="film-details__emoji-list">
@@ -297,6 +299,21 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
     this._handler = handler;
   }
 
+
+  // Отчистка формы добавления нового комментария
+  resetAddCommentForm() {
+    const textComment = this._element.querySelector(`.film-details__comment-input`);
+    textComment.value = ``;
+    const emojiElement = this._element.querySelector(`.film-details__add-emoji-label`).firstElementChild;
+
+    if (emojiElement) {
+      emojiElement.remove();
+    }
+
+    this._commentEmoji = null;
+  }
+
+
   // Сборка данных нового комментария
   gatherComment() {
     const textComment = this._element.querySelector(`.film-details__comment-input`);
@@ -315,16 +332,6 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
       emoji,
       date,
     };
-  }
-
-  resetAddCommentForm() {
-    const textComment = this._element.querySelector(`.film-details__comment-input`);
-    textComment.value = ``;
-    const emojiElement = this._element.querySelector(`.film-details__add-emoji-label`).firstElementChild;
-
-    if (emojiElement) {
-      emojiElement.remove();
-    }
   }
 
   _setCommentsEmoji() {
@@ -364,10 +371,11 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
 
   _sendComment(comment) {
     this._api.sendComment(this._id, comment)
-    .then(() => {
-      this._comments = this._comments.concat(comment);
-      this.commentsChanges.notify(this._comments);
+    .then((comments) => {
+      this._comments = comments;
+      this.commentsChanges.notify(this._comments.map((newComment) => newComment.id));
       this.rerender();
+      this.resetAddCommentForm();
     });
   }
 
