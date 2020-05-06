@@ -1,16 +1,17 @@
-import AbstractComponent from "../abstract-component";
+import AbstractSmartComponent from "../abstract-smart-component";
 import {ProfileRatingRules, FilterType} from "../../const";
 import {getFilmsByFilter} from "../../utils/filters";
 
 // Генерация Звания пользователя
-export default class ProfileComponent extends AbstractComponent {
-  constructor(films) {
+export default class ProfileComponent extends AbstractSmartComponent {
+  constructor(filmsModel) {
     super();
-    this._films = films;
+    this._films = filmsModel;
   }
 
   getProfileRating() {
-    const watchedFilmsCount = getFilmsByFilter(this._films, FilterType.HISTORY).length;
+    const films = this._films.getAllFilms();
+    const watchedFilmsCount = getFilmsByFilter(films, FilterType.HISTORY).length;
 
     const ratingRule = ProfileRatingRules.find((rule) => {
       return rule.from <= watchedFilmsCount && watchedFilmsCount <= rule.to;
@@ -19,6 +20,15 @@ export default class ProfileComponent extends AbstractComponent {
     return ratingRule.rating;
 
   }
+
+  recoveryListeners() {
+    this.getProfileRating();
+  }
+
+  rerender() {
+    super.rerender();
+  }
+
 
   getTemplate() {
     return (

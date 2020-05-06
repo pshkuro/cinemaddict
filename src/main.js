@@ -22,9 +22,9 @@ const filtersController = new FiltersController(mainPageElement, filmsModel);
 const loadingComponent = new LoadingComponent();
 const filmsContentComponent = new FilmContentComponent();
 const filmContentController = new PageController(filmsContentComponent, filmsModel, api); // передаем контейнер, внутри которого все это происходит
+const profileComponent = new ProfileComponent(filmsModel);
 
-
-render(headerPageElement, new ProfileComponent(filmsModel.getAllFilms()), RenderPosition.BEFOREEND);
+render(headerPageElement, profileComponent, RenderPosition.BEFOREEND);
 filtersController.render();
 render(mainPageElement, loadingComponent, RenderPosition.BEFOREEND);
 // Рендерим блок FilmContent на страницу
@@ -60,6 +60,7 @@ api.getFilms()
   .then((films) => {
     remove(loadingComponent);
     filmsModel.setFilms(films);
+    profileComponent.rerender();
     filmContentController.render();
     // Рендерим количество фильмов в футер
     render(footerStatisticsElement, new FilmCountComponent(films), RenderPosition.BEFOREEND);
