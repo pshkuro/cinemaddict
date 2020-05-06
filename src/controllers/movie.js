@@ -111,8 +111,8 @@ export default class FilmController {
 
     // Удаление и добавление комментария
     this._filmDetailsComponent.commentsChanges.subscribe((comments) => {
-      const film = Object.assign(this._film, {comments});
-      this.render(film);
+      const film = Object.assign({}, this._film, {comments});
+      this._onDataChange(this, this._film, film, true);
     });
 
   }
