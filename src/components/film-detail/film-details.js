@@ -1,9 +1,10 @@
-import {formatDate, formatTime} from "../../utils/date";
-import {createElement} from "../../utils/render";
-import FilmsCommentsComponent from "./film-detail-comments";
-import FilmsGenresComponent from "./film-detail-ganre";
 import AbstractSmartComponent from "../abstract-smart-component";
 import Observable from "../../observable";
+import FilmsCommentsComponent from "./film-detail-comments";
+import FilmsGenresComponent from "./film-detail-ganre";
+import {createElement} from "../../utils/render";
+import {formatDate, formatTime} from "../../utils/date";
+import {shake} from "../../utils/interactivity";
 
 // Генерация блока FilmsDetails
 export default class FilmDetailsComponent extends AbstractSmartComponent {
@@ -34,18 +35,16 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
     this._isFavorite = isFavorite;
     this._comments = comments;
     this._commentEmoji = null;
-    this._text = ``;
     this._api = api;
     this._getComments();
 
-    this._watchlistHandler = null;
-    this._watchedHandler = null;
-    this._favoriteHandler = null;
     this._handler = null;
-    this._setCommentHandler = null;
     this._element = this.getElement();
     this._setCommentsEmoji();
     this._commentsLoadingError = false;
+    this._commentInputField = null;
+    this._activeDeleteCommentButtons = null;
+    this._filmDetailsComment = null;
 
     this.commentsChanges = new Observable();
     this.watchListChanges = new Observable();
@@ -175,7 +174,7 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
           </div>
   
           <label class="film-details__comment-label">
-            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" value="${this._text}"></textarea>
+            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
           </label>
   
           <div class="film-details__emoji-list">
@@ -219,13 +218,13 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
   }
 
   recoveryListeners() {
-    this.setWatchlistButtonClickHandler(this._watchlistHandler);
-    this.setWatchedButtonClickHandler(this._watchedHandler);
-    this.setFavoriteButtonClickHandler(this._favoriteHandler);
+    this.setWatchlistButtonClickHandler();
+    this.setWatchedButtonClickHandler();
+    this.setFavoriteButtonClickHandler();
     this._setCommentsEmoji();
     this.setEscCloseButtonHanler(this._handler);
     this.setDeleteButtonClickHandler();
-    this.setSendCommentHandler(this._setCommentHandler);
+    this.setSendCommentHandler();
   }
 
   // Удаление комментария
@@ -235,10 +234,11 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
       Array.from(deleteCommentButtons).forEach((button) => button.addEventListener(`click`, (evt) => {
         evt.preventDefault();
 
-        const deleteButton = evt.target;
-        const comment = deleteButton.closest(`.film-details__comment`);
-        const removeCommentId = comment.id;
+        this._activeDeleteCommentButtons = evt.target;
+        this._addDeleteButtonActiveState();
 
+        this._filmDetailsComment = this._activeDeleteCommentButtons.closest(`.film-details__comment`);
+        const removeCommentId = this._filmDetailsComment.id;
         this._deleteComment(removeCommentId);
       }));
     }
@@ -246,11 +246,12 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
 
   // Отправка нового комментария
   setSendCommentHandler() {
-    const textComment = this._element.querySelector(`.film-details__comment-input`);
-    textComment.addEventListener(`keydown`, (evt) => {
+    this._commentInputField = this._element.querySelector(`.film-details__comment-input`);
+    this._commentInputField.addEventListener(`keydown`, (evt) => {
       const isCtrlAndEnter = evt.code === `Enter` && (evt.ctrlKey || evt.metaKey);
       if (isCtrlAndEnter) {
-        const comment = this.gatherComment();
+        this._commentInputField.setAttribute(`disabled`, `disabled`);
+        const comment = this._gatherComment();
         if (!comment) {
           return;
         } else {
@@ -261,34 +262,28 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
   }
 
   // Добавление фильма в списки
-  setWatchlistButtonClickHandler(handler) {
+  setWatchlistButtonClickHandler() {
     this._element.querySelector(`.film-details__control-label--watchlist`)
     .addEventListener(`click`, (evt) => {
       evt.preventDefault();
       this._toggleWatchList();
     });
-
-    this._watchlistHandler = handler;
   }
 
-  setWatchedButtonClickHandler(handler) {
+  setWatchedButtonClickHandler() {
     this._element.querySelector(`.film-details__control-label--watched`)
     .addEventListener(`click`, (evt) => {
       evt.preventDefault();
       this._toggleWatched();
     });
-
-    this._watchedHandler = handler;
   }
 
-  setFavoriteButtonClickHandler(handler) {
+  setFavoriteButtonClickHandler() {
     this._element.querySelector(`.film-details__control-label--favorite`)
     .addEventListener(`click`, (evt) => {
       evt.preventDefault();
       this._toggleFavorites();
     });
-
-    this._favoriteHandler = handler;
   }
 
   // Закрытие попапа
@@ -315,7 +310,7 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
 
 
   // Сборка данных нового комментария
-  gatherComment() {
+  _gatherComment() {
     const textComment = this._element.querySelector(`.film-details__comment-input`);
 
     const text = textComment.value;
@@ -370,12 +365,19 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
   }
 
   _sendComment(comment) {
+    const newCommentContainer = this._element.querySelector(`.film-details__new-comment`);
+
     this._api.sendComment(this._id, comment)
     .then((comments) => {
       this._comments = comments;
       this.commentsChanges.notify(this._comments.map((newComment) => newComment.id));
       this.rerender();
       this.resetAddCommentForm();
+    })
+    .catch(() => {
+      shake(newCommentContainer);
+      this._addRedBorderToTextField();
+      this._returnsTextFieldToDefaultState();
     });
   }
 
@@ -385,6 +387,30 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
         this._comments = this._comments.filter((comment) => comment.id !== commentId);
         this.commentsChanges.notify(this._comments.map((comment) => comment.id));
         this.rerender();
+      })
+      .catch(() => {
+        shake(this._filmDetailsComment);
+        this._returnsDeleteButtonToDefaultState();
       });
+  }
+
+  // Работа с отправкой комментариев - добавление обводки/блокировка
+  _addRedBorderToTextField() {
+    this._commentInputField.style.border = `1px solid red`;
+  }
+
+  _returnsTextFieldToDefaultState() {
+    this._commentInputField.removeAttribute(`disabled`);
+  }
+
+  // Работа с удалением комменатрев - Изменение надписи/ блокировка
+  _addDeleteButtonActiveState() {
+    this._activeDeleteCommentButtons.setAttribute(`disabled`, `disabled`);
+    this._activeDeleteCommentButtons.innerText = `Deleting…`;
+  }
+
+  _returnsDeleteButtonToDefaultState() {
+    this._activeDeleteCommentButtons.innerText = `Delete`;
+    this._activeDeleteCommentButtons.removeAttribute(`disabled`);
   }
 }
