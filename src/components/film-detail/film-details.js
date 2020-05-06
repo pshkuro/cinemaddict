@@ -44,6 +44,7 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
     this._setCommentHandler = null;
     this._element = this.getElement();
     this._setCommentsEmoji();
+    this._commentsLoadingError = false;
 
     this.commentsChanges = new Observable();
     this.watchListChanges = new Observable();
@@ -56,6 +57,10 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
       .getComments(this._id)
       .then((comments) => {
         this._comments = comments;
+        this.rerender();
+      })
+      .catch(() => {
+        this._commentsLoadingError = true;
         this.rerender();
       });
   }
@@ -74,6 +79,8 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
       ? `<img src="./images/emoji/${this._commentEmoji}.png" width=55" height="55" alt="emoji">`
       : ``;
     const formatedDuration = formatTime(this._duration);
+    const commentsLoadingErrorMarkup = `<h2 class="films-list__title">Sorry, comments are not available.
+     Please, try again.</h2>`;
 
     return (
       `<section class="film-details">
@@ -157,7 +164,7 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
         <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${this._comments.length}</span></h3>
   
         <ul class="film-details__comments-list">
-          ${filmCommentsMarkup}
+          ${this._commentsLoadingError ? commentsLoadingErrorMarkup : filmCommentsMarkup}
         </ul>
   
         <div class="film-details__new-comment">
