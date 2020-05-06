@@ -2,6 +2,8 @@ import AbstractComponent from "../abstract-component";
 import {createElement} from "../../utils/render";
 import {formatTime} from "../../utils/date";
 
+const MAX_DESCRIPTION_LENGTH = 139;
+
 // Генерация карточки фильма
 export default class FilmCardComponent extends AbstractComponent {
   constructor(film) {
@@ -33,8 +35,13 @@ export default class FilmCardComponent extends AbstractComponent {
   getTemplate() {
     const releaseDate = this._date.getFullYear();
     const formatedDuaration = formatTime(this._duration);
-    const filmCardGenre = this._genre[0];
+    const filmCardGenre = this._genre.length > 0 ? this._genre[0] : ``;
     const commentsCount = this._comments.length;
+
+    if (this._description.length > MAX_DESCRIPTION_LENGTH) {
+      this._description = `${this._description.slice(0, MAX_DESCRIPTION_LENGTH)}...`;
+    }
+
     return (
       `<article class="film-card" data-id="${this._title}"> 
       <h3 class="film-card__title">${this._title}</h3>

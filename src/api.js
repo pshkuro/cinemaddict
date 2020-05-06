@@ -1,5 +1,6 @@
 import FilmModel from "./models/film";
 import CommentModel from "./models/comments";
+import NewCommentModel from "./models/new-comment";
 
 const Method = {
   GET: `GET`,
@@ -34,6 +35,17 @@ const API = class {
     })
       .then((response) => response.json())
       .then(CommentModel.parseComments);
+  }
+
+  sendComment(filmId, data) {
+    return this._load({
+      url: `comments/${filmId}`,
+      method: Method.POST,
+      body: JSON.stringify(NewCommentModel.toRAW(data)),
+      headers: new Headers({"Content-Type": `application/json`})
+    })
+      .then((response) => response.json())
+      .then((film) => CommentModel.parseComments(film.comments));
   }
 
   deleteComment(id) {

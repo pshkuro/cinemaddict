@@ -109,32 +109,12 @@ export default class FilmController {
       }));
     });
 
-    // Удаление комментария
+    // Удаление и добавление комментария
     this._filmDetailsComponent.commentsChanges.subscribe((comments) => {
-      this._onDataChange(this, this._film, Object.assign(this._film, {comments}));
+      const film = Object.assign({}, this._film, {comments});
+      this._onDataChange(this, this._film, film, true);
     });
 
-    // this._filmDetailsComponent.setDeleteButtonClickHandler((evt) => {
-    //   // evt.preventDefault();
-
-    //   // const deleteButton = evt.target;
-    //   // const commentItem = deleteButton.closest(`.film-details__comment`);
-    //   // const removeCommentId = commentItem.id;
-    //   // this._onDataChange(this, this._film, Object.assign(this._film, {comments}));
-    // });
-
-    // Добавление комментария
-    this._filmDetailsComponent.setSendCommentHandler((evt) => {
-      const isCtrlAndEnter = evt.code === `Enter` && (evt.ctrlKey || evt.metaKey);
-      if (isCtrlAndEnter) {
-        const comment = this._filmDetailsComponent.gatherComment();
-        if (!comment) {
-          return;
-        }
-        const newComments = this._film.comments.concat(comment);
-        this._onDataChange(this, this._film, Object.assign(this._film, {comments: newComments}));
-      }
-    });
   }
 
   // Открываем карточку

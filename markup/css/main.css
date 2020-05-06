@@ -41,12 +41,14 @@ html {
   overflow: hidden;
 }
 
+
 body {
   box-sizing: border-box;
   max-width: 1240px;
   padding: var(--vertical-gap) var(--horizontal-gap) 0;
   width: 100%;
 }
+
 
 .hide-overflow {
   overflow: hidden;

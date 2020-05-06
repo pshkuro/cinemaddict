@@ -1,5 +1,5 @@
 import AbstractSmartComponent from "../abstract-smart-component";
-import {ProfileRatingRules, FILM_GENRE} from "../../const";
+import {ProfileRatingRules} from "../../const";
 import Chart from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import moment from "moment";
@@ -27,11 +27,28 @@ const FILTER_MOMENT_UNIT_OF_TIME = {
   'year': `years`
 };
 
+const getFilmsGenres = (filmsModel) => {
+  const data = filmsModel.reduce((genreSet, film) => {
+    const genres = film.info.genre;
+    const hasGenres = genres.length > 0;
+
+    if (hasGenres) {
+      genreSet.add(...genres);
+    }
+
+    return genreSet;
+  }, new Set());
+
+  return Array.from(data);
+};
+
 const getCountFilmsByGenre = (films) => {
   if (!films.length) {
     return [];
   }
-  return FILM_GENRE.map((genre) => {
+
+  const filmsGenres = getFilmsGenres(films);
+  return filmsGenres.map((genre) => {
     return {
       genre,
       count: films.reduce((sum, film) => {
@@ -91,7 +108,7 @@ export default class StatisticsComponent extends AbstractSmartComponent {
     <p class="statistic__rank">
       Your rank
       <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-      <span class="statistic__rank-label">${getProfileRating(watchedFilmsCount)}</span>
+      <span class="statistic__rank-label">${getProfileRating(this._films.length)}</span>
     </p>
 
     <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
