@@ -36,6 +36,7 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
     this._comments = comments;
     this._commentEmoji = null;
     this._api = api;
+    this._commentText = ``;
     this._getComments();
 
     this._handler = null;
@@ -175,7 +176,7 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
           </div>
   
           <label class="film-details__comment-label">
-            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${this._commentText}</textarea>
           </label>
   
           <div class="film-details__emoji-list">
@@ -249,6 +250,7 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
   setSendCommentHandler() {
     this._commentInputField = this._element.querySelector(`.film-details__comment-input`);
     this._commentInputField.addEventListener(`keydown`, (evt) => {
+      this._commentText = this._commentInputField.value;
       const isCtrlAndEnter = evt.code === `Enter` && (evt.ctrlKey || evt.metaKey);
       if (isCtrlAndEnter) {
         this._commentInputField.setAttribute(`disabled`, `disabled`);
