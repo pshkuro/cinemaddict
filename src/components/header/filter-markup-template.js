@@ -1,6 +1,5 @@
 import AbstractComponent from "../abstract-component";
 import {FilterType} from "../../const";
-const ITEM_COUNT_SHOW_NUMBER = 5;
 
 // Генерация 1 фильтра
 export default class FiltersMarkupComponent extends AbstractComponent {
@@ -21,7 +20,7 @@ export default class FiltersMarkupComponent extends AbstractComponent {
     <a href="#${this._name.toLowerCase()}"
     id="filter__${this._name}"
     class="main-navigation__item${navigationActiveClass}">
-    ${this._name } ${(this._name === FilterType.ALL || this._count > ITEM_COUNT_SHOW_NUMBER) ? `` :
+    ${this._name } ${(this._name === FilterType.ALL) ? `` :
         `<span class="main-navigation__item-count">${this._count}</span>`}</a>`
     );
   }

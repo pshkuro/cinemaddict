@@ -73,6 +73,7 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
 
   getTemplate() {
     const formatedDate = formatDate(this._date);
+    const isGenresOrGenre = this._genre.length > 1 ? `Genres` : `Genre`;
     const filmGenreMarkup = this._genre.map((genreItem) => new FilmsGenresComponent(genreItem).getTemplate()).join(`\n`);
     const filmCommentsMarkup = this._comments.map((comment) =>
       new FilmsCommentsComponent(comment.emoji, comment.text, comment.author, comment.date, comment.id).getTemplate()).join(`\n`);
@@ -135,7 +136,7 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
                   <td class="film-details__cell">${this._country}</td>
                 </tr>
                 <tr class="film-details__row">
-                  <td class="film-details__term">Genres</td>
+                  <td class="film-details__term">${isGenresOrGenre}</td>
                   <td class="film-details__cell">
                     ${filmGenreMarkup}
                 </tr>
