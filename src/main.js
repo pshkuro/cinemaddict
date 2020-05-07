@@ -11,7 +11,7 @@ import StatisticsComponent from "./components/header/statistics";
 import Store from "./api/store";
 import {render, RenderPosition, remove} from "./utils/render";
 
-const AUTHORIZATION = `Basic kTy9gIdsz2117rD`;
+const AUTHORIZATION = `Basic kTy9gIdsz2217rD`;
 const END_POINT = `https://11.ecmascript.pages.academy/cinemaddict`;
 const STORE_PREFIX = `cinemaddict-localstorage`;
 const STORE_VER = `v1`;
