@@ -97,7 +97,7 @@ export default class FilmModel {
     return data.map(FilmModel.parseFilm);
   }
 
-  // static clone(data) {
-  //   // return FilmModel.toRAW();
-  // }
+  static clone(data) {
+    return new FilmModel(FilmModel.toRAW(data)); // ?????????
+  }
 }

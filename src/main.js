@@ -1,4 +1,4 @@
-import API from "./api";
+import API from "./api/index";
 import FiltersController from "./controllers/filters";
 import FilmContentComponent from "./components/film-content/film-content";
 import FilmCountComponent from "./components/statistic";
@@ -6,13 +6,20 @@ import FilmsModel from "./models/films";
 import LoadingComponent from "./components/loading";
 import PageController from "./controllers/page-content";
 import ProfileComponent from './components/header/profile';
+import Provider from "./api/provider";
 import StatisticsComponent from "./components/header/statistics";
+import Store from "./api/store";
 import {render, RenderPosition, remove} from "./utils/render";
 
-const AUTHORIZATION = `Basic kTy9gIdsz2317rD`;
+const AUTHORIZATION = `Basic kTy9gIdsz2117rD`;
 const END_POINT = `https://11.ecmascript.pages.academy/cinemaddict`;
+const STORE_PREFIX = `cinemaddict-localstorage`;
+const STORE_VER = `v1`;
+const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
 
 const api = new API(END_POINT, AUTHORIZATION); // Массив объектов карточек кол-ом CARD_FILM_COUNT
+const store = new Store(STORE_NAME, window.localStorage);
+const apiWithProvider = new Provider(api, store);
 const filmsModel = new FilmsModel();
 
 const headerPageElement = document.querySelector(`header`);
@@ -21,7 +28,7 @@ const footerStatisticsElement = document.querySelector(`.footer__statistics`);
 const filtersController = new FiltersController(mainPageElement, filmsModel);
 const loadingComponent = new LoadingComponent();
 const filmsContentComponent = new FilmContentComponent();
-const filmContentController = new PageController(filmsContentComponent, filmsModel, api); // передаем контейнер, внутри которого все это происходит
+const filmContentController = new PageController(filmsContentComponent, filmsModel, apiWithProvider); // передаем контейнер, внутри которого все это происходит
 const profileComponent = new ProfileComponent(filmsModel);
 
 render(headerPageElement, profileComponent, RenderPosition.BEFOREEND);
@@ -56,7 +63,7 @@ mainPageElement.addEventListener(`click`, (evt) => {
 });
 
 
-api.getFilms()
+apiWithProvider.getFilms()
   .then((films) => {
     remove(loadingComponent);
     filmsModel.setFilms(films);
@@ -65,4 +72,21 @@ api.getFilms()
     // Рендерим количество фильмов в футер
     render(footerStatisticsElement, new FilmCountComponent(films), RenderPosition.BEFOREEND);
   });
+
+window.addEventListener(`load`, () => {
+  navigator.serviceWorker.register(`./sw.js`)
+      .then(() => {
+      }).catch(() => {
+      });
+});
+
+window.addEventListener(`online`, () => {
+  document.title = document.title.replace(` [offline]`, ``);
+
+  apiWithProvider.sync();
+});
+
+window.addEventListener(`offline`, () => {
+  document.title += ` [offline]`;
+});
 

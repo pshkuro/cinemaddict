@@ -43,29 +43,4 @@ export const createElement = (template) => {
   return newElement.firstChild;
 };
 
-// Ф создания нескольких карточек
-export function createElementsTemplate(data, templateFn) {
-  let template = ``;
-  for (let i = 0; i < data.length; i++) {
-    if (!data[i]) {
-      return template;
-    }
-    template = `${template} ${templateFn(data[i])}`;
-  }
-  return template;
-}
-
-// Ф создания нескольких карточек
-export function createElements(data, Component) {
-  const fragment = new DocumentFragment();
-
-  data.forEach((item) => {
-    const component = new Component(item);
-    const element = component.getElement();
-
-    fragment.appendChild(element);
-  });
-
-  return fragment;
-}
 

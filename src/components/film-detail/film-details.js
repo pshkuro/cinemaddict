@@ -64,6 +64,7 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
       .catch(() => {
         this._commentsLoadingError = true;
         this.rerender();
+        this._commentInputField.setAttribute(`disabled`, `disabled`);
       });
   }
 
@@ -84,7 +85,6 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
     const formatedDuration = formatTime(this._duration);
     const commentsLoadingErrorMarkup = `<h2 class="films-list__title">Sorry, comments are not available.
      Please, try again.</h2>`;
-
     return (
       `<section class="film-details">
       <form class="film-details__inner" action="" method="get">
@@ -249,8 +249,10 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
   // Отправка нового комментария
   setSendCommentHandler() {
     this._commentInputField = this._element.querySelector(`.film-details__comment-input`);
-    this._commentInputField.addEventListener(`keydown`, (evt) => {
+    this._commentInputField.addEventListener(`input`, () => {
       this._commentText = this._commentInputField.value;
+    });
+    this._commentInputField.addEventListener(`keydown`, (evt) => {
       const isCtrlAndEnter = evt.code === `Enter` && (evt.ctrlKey || evt.metaKey);
       if (isCtrlAndEnter) {
         this._commentInputField.setAttribute(`disabled`, `disabled`);
@@ -376,6 +378,7 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
       this.commentsChanges.notify(this._comments.map((newComment) => newComment.id));
       this.rerender();
       this.resetAddCommentForm();
+      this._commentText = ``;
     })
     .catch(() => {
       shake(newCommentContainer);
