@@ -8,11 +8,6 @@ export const formatTime = (time) => {
   return `${hours}h ${minutes}m`;
 };
 
-// Генерация случайной даты от до
-export function getRandomDate(start, end) {
-  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
-}
-
 export function formatDate(date) {
   return moment(date).format(`DD MMMM YYYY`);
 }
