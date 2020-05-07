@@ -98,6 +98,6 @@ export default class FilmModel {
   }
 
   static clone(data) {
-    return new FilmModel(FilmModel.toRAW(data)); // ?????????
+    return new FilmModel(FilmModel.toRAW(data));
   }
 }

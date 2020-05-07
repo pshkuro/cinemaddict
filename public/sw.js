@@ -1,10 +1,14 @@
-const CACHE_PREFIX = `cinemaddict-cache`;
-const CACHE_VER = `v1`;
-const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VER}`;
+const Cache = {
+  CACHE_PREFIX: `cinemaddict-cache`,
+  CACHE_VER: `v1`,
+  get CACHE_NAME() {
+    return `${this.CACHE_PREFIX}-${this.CACHE_VER}`;
+  }
+};
 
 self.addEventListener(`install`, (evt) => {
   evt.waitUntil(
-      caches.open(CACHE_NAME)
+      caches.open(Cache.CACHE_NAME)
         .then((cache) => {
           return cache.addAll([
             `./index.html`,
@@ -49,7 +53,7 @@ self.addEventListener(`activate`, (evt) => {
                       // Удаляем только те кэши,
                       // которые начинаются с нашего префикса,
                       // но не совпадают по версии
-                      if (key.startsWith(CACHE_PREFIX) && key !== CACHE_NAME) {
+                      if (key.startsWith(Cache.CACHE_PREFIX) && key !== Cache.CACHE_NAME) {
                         return caches.delete(key);
                       }
 
