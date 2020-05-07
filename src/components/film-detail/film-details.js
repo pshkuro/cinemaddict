@@ -249,8 +249,10 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
   // Отправка нового комментария
   setSendCommentHandler() {
     this._commentInputField = this._element.querySelector(`.film-details__comment-input`);
-    this._commentInputField.addEventListener(`keydown`, (evt) => {
+    this._commentInputField.addEventListener(`input`, () => {
       this._commentText = this._commentInputField.value;
+    });
+    this._commentInputField.addEventListener(`keydown`, (evt) => {
       const isCtrlAndEnter = evt.code === `Enter` && (evt.ctrlKey || evt.metaKey);
       if (isCtrlAndEnter) {
         this._commentInputField.setAttribute(`disabled`, `disabled`);
