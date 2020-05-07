@@ -2,11 +2,10 @@ import SortComponent, {SortType} from "../components/header/sort";
 import FilmsListComponent from "../components/film-content/films-list";
 import NoFilmsComponent from "../components/film-content/no-films";
 import ShowMoreButtonComponent from "../components/film-content/show-more-button";
-import FilmTopRatedComponent from "../components/film-content/film-extra-rated";
-import FilmMostCommentedComponent from "../components/film-content/film-extra-commented";
+import FilmTopRatedComponent from "../components/film-content/film-top-rated";
+import FilmMostCommentedComponent from "../components/film-content/film-most-commented";
 import {render, RenderPosition, remove} from "../utils/render";
-import FilmController, {State as FilmControllerState} from "./movie";
-
+import FilmController, {State as FilmControllerState} from "./film";
 
 const SHOWING_CARDS_COUNT_BY_BUTTON = 5;
 const SHOWING_CARDS_COUNT_ON_START = 5;

@@ -6,6 +6,8 @@ import {createElement} from "../../utils/render";
 import {formatDate, formatTime} from "../../utils/date";
 import {shake} from "../../utils/interactivity";
 
+const GENRES_DESCRIPTION_COUNT = 1;
+
 // Генерация блока FilmsDetails
 export default class FilmDetailsComponent extends AbstractSmartComponent {
   constructor(film, api) {
@@ -75,7 +77,7 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
 
   getTemplate() {
     const formatedDate = formatDate(this._date);
-    const isGenresOrGenre = this._genre.length > 1 ? `Genres` : `Genre`;
+    const isGenresOrGenre = this._genre.length > GENRES_DESCRIPTION_COUNT ? `Genres` : `Genre`;
     const filmGenreMarkup = this._genre.map((genreItem) => new FilmsGenresComponent(genreItem).getTemplate()).join(`\n`);
     const filmCommentsMarkup = this._comments.map((comment) =>
       new FilmsCommentsComponent(comment.emoji, comment.text, comment.author, comment.date, comment.id).getTemplate()).join(`\n`);
@@ -229,6 +231,19 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
     this.setSendCommentHandler();
   }
 
+  // Отчистка формы добавления нового комментария
+  resetAddCommentForm() {
+    const textComment = this._element.querySelector(`.film-details__comment-input`);
+    textComment.value = ``;
+    const emojiElement = this._element.querySelector(`.film-details__add-emoji-label`).firstElementChild;
+
+    if (emojiElement) {
+      emojiElement.remove();
+    }
+
+    this._commentEmoji = null;
+  }
+
   // Удаление комментария
   setDeleteButtonClickHandler() {
     const deleteCommentButtons = this._element.querySelectorAll(`.film-details__comment-delete`);
@@ -300,20 +315,6 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
   }
 
 
-  // Отчистка формы добавления нового комментария
-  resetAddCommentForm() {
-    const textComment = this._element.querySelector(`.film-details__comment-input`);
-    textComment.value = ``;
-    const emojiElement = this._element.querySelector(`.film-details__add-emoji-label`).firstElementChild;
-
-    if (emojiElement) {
-      emojiElement.remove();
-    }
-
-    this._commentEmoji = null;
-  }
-
-
   // Сборка данных нового комментария
   _gatherComment() {
     const textComment = this._element.querySelector(`.film-details__comment-input`);
@@ -338,6 +339,9 @@ export default class FilmDetailsComponent extends AbstractSmartComponent {
     const emojiList = this._element.querySelector(`.film-details__emoji-list`);
 
     emojiList.addEventListener(`click`, (evt) => {
+      if (this._commentsLoadingError) {
+        return;
+      }
       const emojiLabelElement = evt.target.closest(`.film-details__emoji-label`);
 
       if (emojiLabelElement) {

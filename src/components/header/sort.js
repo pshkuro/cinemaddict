@@ -49,7 +49,6 @@ export default class SortComponent extends AbstractSmartComponent {
     this.getElement().addEventListener(`click`, (evt) => {
       evt.preventDefault();
 
-      //  tag name is always in the canonical upper-case form
       if (evt.target.tagName !== `A`) {
         return;
       }
