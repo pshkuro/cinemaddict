@@ -57,7 +57,6 @@ export default class Provider {
     if (isOnline()) {
       return this._api.getComments(id);
     }
-
     return Promise.reject(`offline logic is not implemented`);
   }
 
@@ -72,7 +71,6 @@ export default class Provider {
     if (isOnline()) {
       return this._api.deleteComment(id);
     }
-
     return Promise.reject(`offline logic is not implemented`);
   }
 
@@ -83,12 +81,11 @@ export default class Provider {
       return this._api.sync(storeFilms)
         .then((response) => {
           // Забираем из ответа синхронизированные задачи
-          const createdFilms = getSyncedFilms(response.created);
           const updatedFilms = getSyncedFilms(response.updated);
 
           // Добавляем синхронизированные задачи в хранилище.
           // Хранилище должно быть актуальным в любой момент.
-          const items = createStoreStructure([...createdFilms, ...updatedFilms]);
+          const items = createStoreStructure([...updatedFilms]);
 
           this._store.setItems(items);
         });

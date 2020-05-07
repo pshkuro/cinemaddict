@@ -73,6 +73,13 @@ apiWithProvider.getFilms()
     render(footerStatisticsElement, new FilmCountComponent(films), RenderPosition.BEFOREEND);
   });
 
+window.addEventListener(`load`, () => {
+  navigator.serviceWorker.register(`/sw.js`)
+      .then(() => {
+      }).catch(() => {
+      });
+});
+
 window.addEventListener(`online`, () => {
   document.title = document.title.replace(` [offline]`, ``);
 
