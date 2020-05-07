@@ -11,11 +11,14 @@ import StatisticsComponent from "./components/header/statistics";
 import Store from "./api/store";
 import {render, RenderPosition, remove} from "./utils/render";
 
-const AUTHORIZATION = `Basic kTy9gIdsz2317rD`;
+const AUTHORIZATION = `Basic kTy9gIdsz2117rD`;
 const END_POINT = `https://11.ecmascript.pages.academy/cinemaddict`;
+const STORE_PREFIX = `cinemaddict-localstorage`;
+const STORE_VER = `v1`;
+const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
 
 const api = new API(END_POINT, AUTHORIZATION); // Массив объектов карточек кол-ом CARD_FILM_COUNT
-const store = new Store();
+const store = new Store(STORE_NAME, window.localStorage);
 const apiWithProvider = new Provider(api, store);
 const filmsModel = new FilmsModel();
 
@@ -69,4 +72,14 @@ apiWithProvider.getFilms()
     // Рендерим количество фильмов в футер
     render(footerStatisticsElement, new FilmCountComponent(films), RenderPosition.BEFOREEND);
   });
+
+window.addEventListener(`online`, () => {
+  document.title = document.title.replace(` [offline]`, ``);
+
+  apiWithProvider.sync();
+});
+
+window.addEventListener(`offline`, () => {
+  document.title += ` [offline]`;
+});
 
