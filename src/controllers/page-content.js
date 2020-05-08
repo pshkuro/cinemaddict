@@ -7,9 +7,11 @@ import FilmMostCommentedComponent from "../components/film-content/film-most-com
 import {render, RenderPosition, remove} from "../utils/render";
 import FilmController, {State as FilmControllerState} from "./film";
 
-const SHOWING_CARDS_COUNT_BY_BUTTON = 5;
-const SHOWING_CARDS_COUNT_ON_START = 5;
-const FILM_EXTRA_COUNT = 2;
+const ShowingCardsCount = {
+  BY_BUTTON: 5,
+  ON_START: 5,
+  EXTRA: 2
+};
 
 const renderFilms = (container, films, onDataChange, onViewChange, api) => {
   return films.map((film) => {
@@ -51,7 +53,7 @@ export default class PageController {
     this._noFilmsComponent = new NoFilmsComponent();
     this._showMoreButtonComponent = new ShowMoreButtonComponent();
     this._sortComponent = new SortComponent();
-    this._showingCardsCount = SHOWING_CARDS_COUNT_ON_START;
+    this._showingCardsCount = ShowingCardsCount.ON_START;
     this._filmListContainer = this._filmsListComponent.getElement().querySelector(`.films-list__container`);
     this._topRatedFilmsComponent = null;
     this._filmsRatedSorted = null;
@@ -147,7 +149,7 @@ export default class PageController {
     render(this._containerElement, component, RenderPosition.BEFOREEND);
     const topRatedFilmsContainer = component.getElement().querySelector(`.films-list__container`);
 
-    const newFilms = renderFilms(topRatedFilmsContainer, filmsRatedSorted.slice(0, FILM_EXTRA_COUNT),
+    const newFilms = renderFilms(topRatedFilmsContainer, filmsRatedSorted.slice(0, ShowingCardsCount.EXTRA),
         this._onDataChange, this._onViewChange, this._api);
     this._showedFilmsControllers = this._showedFilmsControllers.concat(newFilms);
   }
@@ -170,7 +172,7 @@ export default class PageController {
 
     this._showMoreButtonComponent.setClickHandler(() => {
       const prevCardsCount = this._showingCardsCount;
-      this._showingCardsCount = this._showingCardsCount + SHOWING_CARDS_COUNT_BY_BUTTON;
+      this._showingCardsCount = this._showingCardsCount + ShowingCardsCount.BY_BUTTON;
 
       const sortedFilms = getSortedFilms(films, this._sortComponent.getSortType(), prevCardsCount, this._showingCardsCount);
       const newFilms = renderFilms(this._filmListContainer, sortedFilms,
@@ -186,7 +188,7 @@ export default class PageController {
   // Сортировка фильмов
   _sortFilms() {
     this._sortComponent.setSortTypeHandler((sortType) => {
-      this._showingCardsCount = SHOWING_CARDS_COUNT_BY_BUTTON;
+      this._showingCardsCount = ShowingCardsCount.BY_BUTTON;
 
       const sortedFilms = getSortedFilms(this._filmsModel.getFilms(), sortType, 0, this._showingCardsCount);
 
@@ -204,7 +206,7 @@ export default class PageController {
 
   _onFilterChange() {
     this._sortComponent.reset();
-    this._updateFilms(SHOWING_CARDS_COUNT_ON_START);
+    this._updateFilms(ShowingCardsCount.ON_START);
   }
 
   _onDataChange(filmController, oldData, newData, local = false) {
