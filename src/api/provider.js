@@ -8,7 +8,6 @@ const getSyncedFilms = (items) => {
   return items.filter(({success}) => success)
     .map(({payload}) => payload.task);
 };
-
 const createStoreStructure = (items) => {
   return items.reduce((acc, current) => {
     return Object.assign({}, acc, {
